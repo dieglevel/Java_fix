@@ -10,13 +10,19 @@ import java.awt.Graphics;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.RoundRectangle2D;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import javax.annotation.processing.Completion;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -29,14 +35,15 @@ import entity.Motobike;
  *
  * @author Admin
  */
-public class MotobikeGUI extends javax.swing.JPanel implements ActionListener {
+public class MotobikeGUI extends javax.swing.JPanel implements ActionListener,MouseListener {
 
     /**
      * Creates new form ..
      * @throws SQLException 
      */
     public MotobikeGUI() throws SQLException {
-        initComponents();       
+        initComponents();   
+        disableTextField();
         loadData();
     }
 
@@ -86,6 +93,13 @@ public class MotobikeGUI extends javax.swing.JPanel implements ActionListener {
         scrollTable = new javax.swing.JScrollPane();
         table = new rojeru_san.complementos.RSTableMetro();
 
+        //EVENT
+        buttonSearch.addActionListener(this);
+        buttonUpdate.addActionListener(this);
+        buttonDelete.addActionListener(this);
+        buttonAdd.addActionListener(this);
+        table.addMouseListener(this);
+        // CODE GUI
         setPreferredSize(new java.awt.Dimension(1580, 770));
 
         Main.setBackground(new java.awt.Color(255, 255, 255));
@@ -500,7 +514,7 @@ public class MotobikeGUI extends javax.swing.JPanel implements ActionListener {
     // End of variables declaration//GEN-END:variables
     private DefaultTableModel model;
     private ArrayList<Motobike> data;
-    
+    private Motobike_DAO dao;
     
     
     public class RoundJTextField extends JTextField {
@@ -529,11 +543,8 @@ public class MotobikeGUI extends javax.swing.JPanel implements ActionListener {
     
     //METHOD !IMPORTANT
     public void loadData() throws SQLException {
-    	Motobike_DAO dao = new Motobike_DAO();
+    	dao = new Motobike_DAO();
     	data = dao.getAllMotobike();
-    	for (Motobike motobike : data) {
-			System.out.println(motobike.toString());
-		}
     	loadTable();
     }
     
@@ -548,42 +559,51 @@ public class MotobikeGUI extends javax.swing.JPanel implements ActionListener {
 										motobike.getTheFrameOfTheMachine(),
 										motobike.getNumberOfRibs(),
 										motobike.getColor(),
-										String.valueOf(motobike.getMoney()),
+										String.format("%.2f",motobike.getMoney()),
 										motobike.getWarrantyPeriod()
 			});
 
 		}
     }
     
+    public void updateData() throws SQLException {
+    	model.setRowCount(0);
+    	loadData();
+    }
+    
     // set all textField null
     public void setNullTextField() {
 		txtMotobikeID.setText("");
-		txtMotobikeID.requestFocus();
-		txtWarrantyPeriod.setText("");
+		txtCountryOfmanufacture.requestFocus();
+		comboWarrantyPeriod.setSelectedIndex(0);
 		txtColor.setText("");
 		txtNumberOfRibs.setText("");
 		txtTheFrameOfTheMachine.setText("");
 		txtCubic.setText("");
 		txtRangeOfVehicle.setText("");
 		txtCountryOfmanufacture.setText("");
+		txtMoney.setText("");
+		comboWarrantyPeriod.setSelectedIndex(0);
 	}
     
 	public void disableTextField() {
 		txtMotobikeID.setEnabled(false);
-		txtWarrantyPeriod.setEnabled(false);
+		comboWarrantyPeriod.setEnabled(false);
 		txtColor.setEnabled(false);
 		txtNumberOfRibs.setEnabled(false);
 		txtTheFrameOfTheMachine.setEnabled(false);
 		txtCubic.setEnabled(false);
 		txtRangeOfVehicle.setEnabled(false);
 		txtCountryOfmanufacture.setEnabled(false);
+		txtMoney.setEnabled(false);
 		// set disable color
 		txtMotobikeID.setBackground(Color.getHSBColor(0f, 0f,0.79f));
-		txtWarrantyPeriod.setBackground(Color.getHSBColor(0f, 0f,0.79f));
+		comboWarrantyPeriod.setBackground(Color.getHSBColor(0f, 0f,0.79f));
 		txtColor.setBackground(Color.getHSBColor(0f, 0f,0.79f));
 		txtNumberOfRibs.setBackground(Color.getHSBColor(0f, 0f,0.79f));
 		txtTheFrameOfTheMachine.setBackground(Color.getHSBColor(0f, 0f,0.79f));
 		txtCubic.setBackground(Color.getHSBColor(0f, 0f,0.79f));
+		txtMoney.setBackground(Color.getHSBColor(0f, 0f,0.79f));
 		txtRangeOfVehicle.setBackground(Color.getHSBColor(0f, 0f,0.79f));
 		txtCountryOfmanufacture.setBackground(Color.getHSBColor(0f, 0f,0.79f));
 	}
@@ -593,7 +613,8 @@ public class MotobikeGUI extends javax.swing.JPanel implements ActionListener {
     //set all textField enable
 	public void enableTextField() {
 		txtMotobikeID.setEnabled(true);
-		txtWarrantyPeriod.setEnabled(true);
+		comboWarrantyPeriod.setEnabled(true);
+		txtMoney.setEnabled(true);
 		txtColor.setEnabled(true);
 		txtNumberOfRibs.setEnabled(true);
 		txtTheFrameOfTheMachine.setEnabled(true);
@@ -602,7 +623,8 @@ public class MotobikeGUI extends javax.swing.JPanel implements ActionListener {
 		txtCountryOfmanufacture.setEnabled(true);
 		// set enable color
 		txtMotobikeID.setBackground(Color.WHITE);
-		txtWarrantyPeriod.setBackground(Color.WHITE);
+		comboWarrantyPeriod.setBackground(Color.WHITE);
+		txtMoney.setBackground(Color.WHITE);
 		txtColor.setBackground(Color.WHITE);
 		txtNumberOfRibs.setBackground(Color.WHITE);
 		txtTheFrameOfTheMachine.setBackground(Color.WHITE);
@@ -610,13 +632,77 @@ public class MotobikeGUI extends javax.swing.JPanel implements ActionListener {
 		txtRangeOfVehicle.setBackground(Color.WHITE);
 		txtCountryOfmanufacture.setBackground(Color.WHITE);
 	}
+	
+	public int createNewID() throws SQLException {
+		dao = new Motobike_DAO();
+		int id = dao.getMaxID()+1;
+		return id;
+	}
+	
+	public Motobike checkValue() {
+		String regexContry = "^([A-Z][a-z]+)(\\s[A-Z][a-z]+)*$"; // each word has first character uppercase, and divide space
+		if(!txtCountryOfmanufacture.getText().matches(regexContry)) {
+			JOptionPane.showMessageDialog(null, "Sai nơi sản xuất ");
+			return null;
+		}
+		
+		String RegexCubic = "^\\d+\\.{0,1}\\d*$"; // Cubic is number and greater than 50
+		if(!txtCubic.getText().trim().matches(RegexCubic)) {
+			JOptionPane.showMessageDialog(null, "Phân khúc chỉ ghi số "+txtCubic.getText());
+			return null;
+		}
+		
+		if(!(Double.parseDouble(txtCubic.getText())>=50)) {
+			JOptionPane.showMessageDialog(null, "Phân khúc lớn hơn 50CC");
+			return null;
+		}
+		
+		String regexFrame = "^[A-Z0-9]{8,12}$";
+		if(!txtTheFrameOfTheMachine.getText().trim().matches(regexFrame)) {
+			JOptionPane.showMessageDialog(null, "Số khung phải gồm 8-12 chữ số. Và chỉ gồm chữ hoa và chữ thường");
+			return null;
+		}
+		
+		String regexRibs = "^[A-Z0-9]{8,12}$";
+		
+		if(!txtNumberOfRibs.getText().trim().matches(regexRibs)) {
+			JOptionPane.showMessageDialog(null, "Số Sườn phải gồm 8-12 chữ số. Và chỉ gồm chữ hoa và chữ thường");
+			return null;
+		}
+		
+		String regexMony = "^\\d*\\.{0,1}\\d*$";
+		if(!txtMoney.getText().matches(regexMony)) {
+			JOptionPane.showMessageDialog(null, "Tiền chỉ ghi số");
+			return null;
+		}
+		
+		if(Double.parseDouble(txtMoney.getText())<0) {
+			JOptionPane.showMessageDialog(null, "Tiền không âm");
+			return null;
+		}
+		
+		
+		Motobike moto = new Motobike(Integer.parseInt(txtMotobikeID.getText()),txtCountryOfmanufacture.getText(), 
+				txtRangeOfVehicle.getText(),Double.parseDouble(txtCubic.getText()), txtTheFrameOfTheMachine.getText(), 
+				txtNumberOfRibs.getText(), txtColor.getText(),Double.parseDouble(txtMoney.getText()),comboWarrantyPeriod.getSelectedItem().toString());
+		return moto;
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();
-		if(o.equals(buttonAdd.equals("THÊM"))) {
+		if(o.equals(buttonAdd)) {
+			if(buttonAdd.getText().equalsIgnoreCase("THÊM")) {
+				table.removeMouseListener(this);
 				enableTextField();
+				setNullTextField();
 				txtMotobikeID.setBackground(Color.getHSBColor(0f, 0f,0.79f));
+				try {
+					txtMotobikeID.setText(Integer.toString(createNewID()));
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				txtCountryOfmanufacture.requestFocus();
 				txtMotobikeID.setEditable(false);
 				
@@ -624,16 +710,111 @@ public class MotobikeGUI extends javax.swing.JPanel implements ActionListener {
 				buttonDelete.setText("HỦY");
 				buttonSearch.setVisible(false);
 				buttonUpdate.setVisible(false);
-            }
-		
-                else if(o.equals(buttonDelete.getText().equals("HỦY"))) {
+			}
+			else if(buttonAdd.getText().equalsIgnoreCase("LƯU")) {
+				
+				dao = new Motobike_DAO();
+				try {
+					if(checkValue() != null)	dao.addMoto(checkValue() );
+					else	 JOptionPane.showMessageDialog(null, "Object moto null");
+					updateData();
+				} catch (SQLException e1) {
+					
+					e1.printStackTrace();
+				}
+				
+			}
+		}
+		if(o.equals(buttonDelete)) {
+			if(buttonDelete.getText().equalsIgnoreCase("HỦY")) {
+				table.addMouseListener(this);
 				setNullTextField();txtCountryOfmanufacture.requestFocus();
 				disableTextField();
 				buttonAdd.setText("THÊM");
 				buttonDelete.setText("XÓA");
 				buttonSearch.setVisible(true);
 				buttonUpdate.setVisible(true);
+			}
 		}
+		
+		if(o.equals(buttonSearch)) {
+			Object tim = "Từ khóa cần tim";
+			String search = JOptionPane.showInputDialog(tim);
+			dao = new Motobike_DAO();
+			data = new ArrayList<>();
+			try {
+				data = dao.search(search);
+				loadTable();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		if(o.equals(buttonUpdate)) {
+			if(buttonUpdate.getText().equalsIgnoreCase("Sửa")) {
+				buttonUpdate.setText("oke");
+				enableTextField();
+			}
+			else if(buttonUpdate.getText().equalsIgnoreCase("oke")) {
+				
+				dao = new Motobike_DAO();
+				try {
+					dao.update(txtMotobikeID.getText(),txtCountryOfmanufacture.getText(),txtRangeOfVehicle.getText(),
+							txtCubic.getText(),txtTheFrameOfTheMachine.getText(),txtNumberOfRibs.getText(),txtColor.getText(),txtMoney.getText()
+							,comboWarrantyPeriod.getSelectedItem().toString());
+					updateData();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				buttonUpdate.setText("Sửa");
+			}
+		}
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		Object o = e.getSource();
+		if(o.equals(table)) {
+			txtMotobikeID.setText(table.getValueAt(table.getSelectedRow(),0).toString());
+			txtCountryOfmanufacture.setText(table.getValueAt(table.getSelectedRow(),1).toString());
+			txtRangeOfVehicle.setText(table.getValueAt(table.getSelectedRow(),2).toString());
+			txtCubic.setText(table.getValueAt(table.getSelectedRow(),3).toString());
+			txtTheFrameOfTheMachine.setText(table.getValueAt(table.getSelectedRow(),4).toString());
+			txtNumberOfRibs.setText(table.getValueAt(table.getSelectedRow(),5).toString());
+			txtColor.setText(table.getValueAt(table.getSelectedRow(),6).toString());
+			txtMoney.setText(table.getValueAt(table.getSelectedRow(),7).toString());
+			for(int i = 0;i < comboWarrantyPeriod.getItemCount();i++) {
+				if(table.getValueAt(table.getSelectedRow(), 8).equals(comboWarrantyPeriod.getItemAt(i))) {
+					comboWarrantyPeriod.setSelectedIndex(i);
+				}
+			}
+		}
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
 		
 	}
 

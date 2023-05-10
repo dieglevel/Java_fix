@@ -93,4 +93,92 @@ public class Motobike_DAO {
 			e.printStackTrace();
 		}
 	}
+	
+	public int getMaxID() throws SQLException {
+		ConnectDB.getInstance().connect();
+		Connection con = ConnectDB.getConnection();
+		
+		int tmp = 0;
+		try {
+			String sql = "select top 1 MaXe from XeMay\r\n"
+					+ "order by MaXe desc";
+			Statement stm = con.createStatement();
+			ResultSet rs = stm.executeQuery(sql);
+			while(rs.next()) {
+				tmp = rs.getInt(1);
+			}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "DATABASE EMPTY");
+			e.printStackTrace();
+		}
+		return tmp;
+	}
+	
+	public ArrayList<Motobike> search(String search) throws SQLException {
+		ArrayList<Motobike> temp = new ArrayList<>();
+		ConnectDB.getInstance().connect();
+		Connection con = ConnectDB.getConnection();
+		
+		try {
+			String sql = "select MaXe,NuocSanXuat,LoaiXe,SoPK,SoKhung,SoSuon,MauXe,GiaXe,ThoiGianBaoHanh from XeMay\r\n"
+					+ "where MaXe like ? or\r\n"
+					+ "	NuocSanXuat like ? or\r\n"
+					+ "	LoaiXe like ? or SoPK like ? or SoKhung like ? or SoSuon like ? or \r\n"
+					+ "	MauXe like ? or GiaXe like ? or ThoiGianBaoHanh like ? ";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1,"%"+ search + "%");
+			ps.setString(2,"%"+ search + "%");
+			ps.setString(3,"%"+ search + "%");
+			ps.setString(4,"%"+ search + "%");
+			ps.setString(5,"%"+ search + "%");
+			ps.setString(6,"%"+ search + "%");
+			ps.setString(7,"%"+ search + "%");
+			ps.setString(8, "%"+ search + "%");
+			ps.setString(9,"%"+ search + "%");
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				temp.add(new Motobike(rs.getInt(1), 
+						rs.getString(2), 
+						rs.getString(3), 
+						rs.getDouble(4), 
+						rs.getString(5), 
+						rs.getString(6), 
+						rs.getString(7), 
+						rs.getDouble(8),
+						rs.getString(9)));
+			}
+			
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null,"Tim Loi");
+			e.printStackTrace();
+		}
+		return temp;
+	}
+	
+	public void update(String txt1,String txt2,String txt3,String txt4,String txt5,String txt6,String txt7,String txt8,String txt9) throws SQLException {
+		ConnectDB.getInstance().connect();
+		Connection con = ConnectDB.getConnection();
+		try {
+			String sql = "update XeMay\r\n"
+					+ "set NuocSanXuat= ?,LoaiXe= ?,SoPK= ?,SoKhung= ?,SoSuon= ?\r\n"
+					+ ",MauXe= ?,GiaXe= ?,ThoiGianBaoHanh= ?\r\n"
+					+ "where MaXe like ?";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1,txt2);
+			ps.setString(2,txt3);
+			ps.setString(3,txt4);
+			ps.setString(4,txt5);
+			ps.setString(5,txt6);
+			ps.setString(6,txt7);
+			ps.setString(7,txt8);
+			ps.setString(8,txt9);
+			ps.setString(9,txt1);
+			if(ps.executeUpdate()==1) {
+				JOptionPane.showMessageDialog(null,"Cập nhật thành công");
+			}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null,"Cập nhật thất bại");
+			e.printStackTrace();
+		}
+	}
 }
