@@ -77,8 +77,8 @@ public class MotobikeGUI extends javax.swing.JPanel implements ActionListener {
         txtMoney = new RoundJTextField(30);
         labelMoney = new javax.swing.JLabel();
         panelWarrantyPeriod = new javax.swing.JPanel();
-        txtWarrantyPeriod = new RoundJTextField(30);
         labelWarrantyPeriod = new javax.swing.JLabel();
+        comboWarrantyPeriod = new javax.swing.JComboBox<>();
         buttonAdd = new javax.swing.JButton();
         buttonDelete = new javax.swing.JButton();
         buttonUpdate = new javax.swing.JButton();
@@ -282,23 +282,20 @@ public class MotobikeGUI extends javax.swing.JPanel implements ActionListener {
         panelWarrantyPeriod.setBackground(new java.awt.Color(255, 255, 255));
         panelWarrantyPeriod.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        txtWarrantyPeriod.setBackground(new java.awt.Color(255, 255, 255));
-        txtWarrantyPeriod.setFont(new java.awt.Font("Bahnschrift", 1, 18)); // NOI18N
-        txtWarrantyPeriod.setHorizontalAlignment(javax.swing.JTextField.LEFT);
-        txtWarrantyPeriod.setToolTipText("");
-        txtWarrantyPeriod.setDisabledTextColor(new java.awt.Color(102, 102, 102));
-        txtWarrantyPeriod.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtWarrantyPeriodActionPerformed(evt);
-            }
-        });
-        panelWarrantyPeriod.add(txtWarrantyPeriod, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 0, 270, 30));
-
         labelWarrantyPeriod.setBackground(new java.awt.Color(255, 255, 255));
         labelWarrantyPeriod.setFont(new java.awt.Font("Leelawadee UI", 1, 18)); // NOI18N
         labelWarrantyPeriod.setForeground(new java.awt.Color(0, 0, 0));
         labelWarrantyPeriod.setText("Thời gian bảo hành:");
-        panelWarrantyPeriod.add(labelWarrantyPeriod, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 240, 30));
+        panelWarrantyPeriod.add(labelWarrantyPeriod, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 190, 30));
+
+        comboWarrantyPeriod.setFont(new java.awt.Font("Bahnschrift", 1, 18));
+        comboWarrantyPeriod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"6 Tháng", "12 Tháng", "36 Tháng"}));
+        comboWarrantyPeriod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboWarrantyPeriodActionPerformed(evt);
+            }
+        });
+        panelWarrantyPeriod.add(comboWarrantyPeriod, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 0, 270, 30));
 
         Header.add(panelWarrantyPeriod, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 140, 460, 40));
 
@@ -454,13 +451,13 @@ public class MotobikeGUI extends javax.swing.JPanel implements ActionListener {
         // TODO add your handling code here:
     }//GEN-LAST:event_buttonUpdateActionPerformed
 
-    private void txtWarrantyPeriodActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtWarrantyPeriodActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtWarrantyPeriodActionPerformed
-
     private void txtMoneyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMoneyActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtMoneyActionPerformed
+
+    private void comboWarrantyPeriodActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboWarrantyPeriodActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_comboWarrantyPeriodActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -470,6 +467,7 @@ public class MotobikeGUI extends javax.swing.JPanel implements ActionListener {
     private javax.swing.JButton buttonDelete;
     private javax.swing.JButton buttonSearch;
     private javax.swing.JButton buttonUpdate;
+    private javax.swing.JComboBox<String> comboWarrantyPeriod;
     private javax.swing.JLabel labelColor;
     private javax.swing.JLabel labelCountryOfmanufacture;
     private javax.swing.JLabel labelCubic;
@@ -499,7 +497,6 @@ public class MotobikeGUI extends javax.swing.JPanel implements ActionListener {
     private javax.swing.JTextField txtNumberOfRibs;
     private javax.swing.JTextField txtRangeOfVehicle;
     private javax.swing.JTextField txtTheFrameOfTheMachine;
-    private javax.swing.JTextField txtWarrantyPeriod;
     // End of variables declaration//GEN-END:variables
     private DefaultTableModel model;
     private ArrayList<Motobike> data;
