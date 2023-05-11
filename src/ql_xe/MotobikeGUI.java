@@ -612,7 +612,7 @@ public class MotobikeGUI extends javax.swing.JPanel implements ActionListener,Mo
 	
     //set all textField enable
 	public void enableTextField() {
-		txtMotobikeID.setEnabled(true);
+//		txtMotobikeID.setEnabled(true);
 		comboWarrantyPeriod.setEnabled(true);
 		txtMoney.setEnabled(true);
 		txtColor.setEnabled(true);
@@ -687,6 +687,17 @@ public class MotobikeGUI extends javax.swing.JPanel implements ActionListener,Mo
 				txtNumberOfRibs.getText(), txtColor.getText(),Double.parseDouble(txtMoney.getText()),comboWarrantyPeriod.getSelectedItem().toString());
 		return moto;
 	}
+	
+	public void functionCancel() throws SQLException {
+		disableTextField();
+		buttonAdd.setText("THÊM");
+		buttonDelete.setText("XÓA");
+		buttonAdd.setVisible(true);
+		buttonSearch.setVisible(true);
+		buttonUpdate.setVisible(true);
+		buttonUpdate.setText("SỬA");
+		updateData();
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -729,15 +740,19 @@ public class MotobikeGUI extends javax.swing.JPanel implements ActionListener,Mo
 			if(buttonDelete.getText().equalsIgnoreCase("HỦY")) {
 				table.addMouseListener(this);
 				setNullTextField();txtCountryOfmanufacture.requestFocus();
-				disableTextField();
-				buttonAdd.setText("THÊM");
-				buttonDelete.setText("XÓA");
-				buttonSearch.setVisible(true);
-				buttonUpdate.setVisible(true);
+				try {
+					functionCancel();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		}
 		
 		if(o.equals(buttonSearch)) {
+			buttonDelete.setText("HỦY");
+			buttonAdd.setVisible(false);
+			buttonUpdate.setVisible(false);
 			Object tim = "Từ khóa cần tim";
 			String search = JOptionPane.showInputDialog(tim);
 			dao = new Motobike_DAO();
@@ -751,11 +766,15 @@ public class MotobikeGUI extends javax.swing.JPanel implements ActionListener,Mo
 			}
 		}
 		if(o.equals(buttonUpdate)) {
-			if(buttonUpdate.getText().equalsIgnoreCase("Sửa")) {
-				buttonUpdate.setText("oke");
+			if(buttonUpdate.getText().equalsIgnoreCase("SỬA")) {
+				buttonDelete.setText("HỦY");
+				buttonUpdate.setText("OKE");
+				buttonSearch.setVisible(false);
+				buttonAdd.setVisible(false);
 				enableTextField();
+				
 			}
-			else if(buttonUpdate.getText().equalsIgnoreCase("oke")) {
+			else if(buttonUpdate.getText().equalsIgnoreCase("OKE")) {
 				
 				dao = new Motobike_DAO();
 				try {
@@ -767,7 +786,12 @@ public class MotobikeGUI extends javax.swing.JPanel implements ActionListener,Mo
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				buttonUpdate.setText("Sửa");
+				try {
+					functionCancel();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		}
 		
