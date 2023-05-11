@@ -137,4 +137,35 @@ public class Contract_DAO {
 
                 
         }
+        
+        	public Contract getContract(int find) throws SQLException{
+		Contract temp = null;
+		ConnectDB.getInstance().connect();
+		Connection con = ConnectDB.getConnection();
+		ConnectDB.connect();
+		try {
+			String sql = "SELECT MaHopDong,MaKhachHang,NgayHopDong,MaNhanVienLapHopDong,TienPhaiThanhToan,\r\n"
+					+ "TiLeGiamGia,TienDaThanhToan,SoLanTraGop,PhuongThucThanhToan FROM HopDong WHERE MaHopDong = ?";
+			java.sql.PreparedStatement stm = con.prepareStatement(sql);
+                        stm.setInt(1, find);
+			ResultSet rs = stm.executeQuery();
+			while (rs.next()) {
+				temp =  new Contract(
+						rs.getInt(1),
+						rs.getInt(2),
+						LocalDate.parse(rs.getString(3).trim(), DateTimeFormatter.ofPattern("d-M-yyyy")),
+						rs.getInt(4),
+						Double.parseDouble(rs.getString(5).trim()),
+						Float.parseFloat(rs.getString(6).trim().substring(0,rs.getString(6).trim().length()-1))/10,
+						Double.parseDouble(rs.getString(7).trim()),
+						Integer.parseInt(rs.getString(8).trim()),
+						rs.getString(9)
+					);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		ConnectDB.disconnect();
+                return temp;
+	}
 }

@@ -405,13 +405,13 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
         panelHistory.setPreferredSize(new java.awt.Dimension(220, 62));
         panelHistory.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                panelHistoryClick_Exit(evt);
+                Click_History(evt);
             }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                panelHistoryEnter_MenuChangeColor(evt);
+                Enter_MenuChangeColor(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                panelHistoryExit_MenuChangeColor(evt);
+                Exit_MenuChangeColor(evt);
             }
         });
 
@@ -511,13 +511,13 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
         panelStatistical.setPreferredSize(new java.awt.Dimension(220, 62));
         panelStatistical.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                panelStatisticalClick_Exit(evt);
+                Click_Status(evt);
             }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                panelStatisticalEnter_MenuChangeColor(evt);
+                Enter_MenuChangeColor(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                panelStatisticalExit_MenuChangeColor(evt);
+                Exit_MenuChangeColor(evt);
             }
         });
 
@@ -698,29 +698,21 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
         dispose();
     }//GEN-LAST:event_Click_Exit
 
-    private void panelHistoryClick_Exit(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelHistoryClick_Exit
+    private void Click_History(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Click_History
         // TODO add your handling code here:
-    }//GEN-LAST:event_panelHistoryClick_Exit
+        closeMenuBar();
+        pMenuMain.remove(2);
+        Panel_ButtonMenu.setVisible(true);
+        pMenuMain.add(History, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 1580, 740));
+    }//GEN-LAST:event_Click_History
 
-    private void panelHistoryEnter_MenuChangeColor(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelHistoryEnter_MenuChangeColor
+    private void Click_Status(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Click_Status
         // TODO add your handling code here:
-    }//GEN-LAST:event_panelHistoryEnter_MenuChangeColor
-
-    private void panelHistoryExit_MenuChangeColor(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelHistoryExit_MenuChangeColor
-        // TODO add your handling code here:
-    }//GEN-LAST:event_panelHistoryExit_MenuChangeColor
-
-    private void panelStatisticalClick_Exit(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelStatisticalClick_Exit
-        // TODO add your handling code here:
-    }//GEN-LAST:event_panelStatisticalClick_Exit
-
-    private void panelStatisticalEnter_MenuChangeColor(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelStatisticalEnter_MenuChangeColor
-        // TODO add your handling code here:
-    }//GEN-LAST:event_panelStatisticalEnter_MenuChangeColor
-
-    private void panelStatisticalExit_MenuChangeColor(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelStatisticalExit_MenuChangeColor
-        // TODO add your handling code here:
-    }//GEN-LAST:event_panelStatisticalExit_MenuChangeColor
+        closeMenuBar();
+        pMenuMain.remove(2);
+        Panel_ButtonMenu.setVisible(true);
+        pMenuMain.add(Status, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 1580, 740));
+    }//GEN-LAST:event_Click_Status
 
     /**
      * @param args the command line arguments
@@ -803,6 +795,8 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
     private PaymentGUI  Payment = new PaymentGUI();
     private WarrantyGUI Warranty = new WarrantyGUI();
     private EmployeeGUI Employee = new EmployeeGUI();
+    private HistoryGUI  History = new HistoryGUI();
+    private StatisticalGUI Status = new StatisticalGUI();
     public static int employeeID = 100001;
     
     int width = 245;
@@ -856,7 +850,6 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		System.out.println(e);
 		 if (e.getSource().equals(Contract.buttonPay)) {
 			 pMenuMain.remove(2);
 			 

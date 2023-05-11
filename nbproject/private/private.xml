@@ -3,12 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Java_17/BTNhom_Java/Java_Lan3/src/ql_xe/HistoryGUI.java</file>
-            <file>file:/D:/Java_17/BTNhom_Java/Java_Lan3/src/ql_xe/StatisticalGUI.java</file>
-            <file>file:/D:/Java_17/BTNhom_Java/Java_Lan3/src/ql_xe/ContractGUI.java</file>
-            <file>file:/D:/Java_17/BTNhom_Java/Java_Lan3/src/ql_xe/GUI.java</file>
-            <file>file:/D:/Java_17/BTNhom_Java/Java_Lan3/src/ql_xe/MotobikeGUI.java</file>
-            <file>file:/D:/Java_17/BTNhom_Java/Java_Lan3/src/ql_xe/EmployeeGUI.java</file>
+            <file>file:/D:/Java_17/null/Java_fix/src/ql_xe/ContractAdd.java</file>
+            <file>file:/D:/Java_17/null/Java_fix/src/ql_xe/ContractGUI.java</file>
+            <file>file:/D:/Java_17/null/Java_fix/src/dao/Contract_DAO.java</file>
         </group>
     </open-files>
 </project-private>

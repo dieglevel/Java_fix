@@ -47,17 +47,23 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
         initComponents();   
         loadData();
         disableTextField();
-        contractAdd.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-              contractAdd.dispose();
-                try {
-                    updateData();
-                } catch (SQLException ex) {
-                    Logger.getLogger(ContractGUI.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        contractAdd.buttonAdd.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource().equals(contractAdd.buttonAdd)){
+                    if (contractAdd.buttonAdd.getText().equalsIgnoreCase("ĐỒNG Ý")){
+                        try {
+                            contractAdd.addData();
+                            contractAdd.dispose();
+                            updateData();
+                        } catch (SQLException ex) {
+                            Logger.getLogger(ContractGUI.class.getName()).log(Level.SEVERE, null, ex);
+                        }
             }
-          });
-        
+        }
+    }   
+});
+ 
     }
 
     /**
@@ -385,6 +391,11 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
         table.setShowVerticalLines(true);
         table.setSurrendersFocusOnKeystroke(true);
         table.getTableHeader().setReorderingAllowed(false);
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                clickTable(evt);
+            }
+        });
         scrollTable.setViewportView(table);
         model = new DefaultTableModel(new String[] {"Mã Hợp Đồng", "Khách Hàng", "Nhân Viên", "Ngày Hợp Đồng", "Thanh Toán", "Đã Trả", "Số Lần Trả"},0){
             @Override
@@ -438,6 +449,27 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
                     contractAdd.setVisible(true);
                 }
     }//GEN-LAST:event_addContract
+
+    private void clickTable(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clickTable
+                if (evt.getSource().equals(table)){
+                    if (table.getSelectedRow()!=-1){
+                            try {
+                            Contract temp = contractDao.getContract(Integer.valueOf(table.getValueAt(table.getSelectedRow(), 0).toString()));
+                            txtContractID.setText(String.valueOf(temp.getContractID()));
+                            txtCustomerID.setText(String.valueOf(temp.getCustomerID()));
+                            txtDayContract.setText(String.valueOf(temp.getContractDate()));
+                            txtDiscountRate.setText(String.valueOf(temp.getDiscount()));
+                            txtEmployeeID.setText(String.valueOf(temp.getStaffID()));
+                            txtMoneyPaid.setText(String.format("%.3f", temp.getMoneypaied()));
+                            txtMoneyToBePaid.setText(String.format("%.3f",temp.getMoneyPay()));
+                            txtNumberOfInstallments.setText(String.valueOf(temp.getTimePay()));
+                        } catch (SQLException ex) {
+                            Logger.getLogger(ContractGUI.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+        }
+ 
+    }//GEN-LAST:event_clickTable
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -511,7 +543,7 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
     }
 }
     
-    public void loadData() throws SQLException {
+    public  void loadData() throws SQLException {
     	contractDao = new Contract_DAO();
     	data = contractDao.getAllContract();
     	for(Contract tmp:data) {
@@ -601,6 +633,7 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
     		model.addRow(tmpRow);
 		}
 	}
+        
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {

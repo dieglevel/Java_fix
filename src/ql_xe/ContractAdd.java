@@ -413,7 +413,7 @@ public class ContractAdd extends javax.swing.JFrame {
         buttonAdd.setFont(new java.awt.Font("MS Reference Sans Serif", 1, 11)); // NOI18N
         buttonAdd.setForeground(new java.awt.Color(0, 0, 0));
         buttonAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-done-20.png"))); // NOI18N
-        buttonAdd.setText("ĐÔNG Ý");
+        buttonAdd.setText("ĐỒNG Ý");
         buttonAdd.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         buttonAdd.setIconTextGap(15);
         buttonAdd.addActionListener(new java.awt.event.ActionListener() {
@@ -434,6 +434,9 @@ public class ContractAdd extends javax.swing.JFrame {
 
     private void buttonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCancelActionPerformed
         // TODO add your handling code here:
+        if (evt.getSource().equals(buttonCancel)){
+            this.dispose();
+        }
     }//GEN-LAST:event_buttonCancelActionPerformed
 
     private void txtContractIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtContractIDActionPerformed
@@ -458,22 +461,11 @@ public class ContractAdd extends javax.swing.JFrame {
 
     private void buttonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddActionPerformed
         // TODO add your handling code here:
-        String voucherFloat = String.valueOf(txtVoucher.getText().trim().replace("%", ""));
-        entity.Contract temp = new Contract(Integer.valueOf(txtContractID.getText()), 
-                Integer.valueOf(txtCustomerID.getText()), 
-                LocalDate.parse(txtDayContract.getText(), DateTimeFormatter.ofPattern("d-M-yyyy")),
-                Integer.valueOf(txtEmployeeID.getText()),
-                Double.valueOf(txtMoneyToPay.getText()),
-                Float.valueOf(voucherFloat),
-                Double.valueOf("0"),
-                Integer.valueOf(txtNumberOfInstallments.getText()),
-                String.valueOf(comboMethod.getSelectedItem()));
-        try {
-            contractDao.addContract(temp);
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(ContractAdd.class.getName()).log(Level.SEVERE, null, ex);
-        }
+       if (evt.getSource().equals(buttonAdd)){
+           if (buttonAdd.getText().equalsIgnoreCase("ĐỒNG Ý")){
+                
+           }
+       }
         
     }//GEN-LAST:event_buttonAddActionPerformed
 
@@ -533,7 +525,7 @@ public class ContractAdd extends javax.swing.JFrame {
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton buttonAdd;
+    public javax.swing.JButton buttonAdd;
     private javax.swing.JButton buttonAddCustomer;
     private javax.swing.JButton buttonCancel;
     private javax.swing.JComboBox<String> comboMethod;
@@ -614,6 +606,30 @@ public class ContractAdd extends javax.swing.JFrame {
         txtVoucher.setBackground(Color.white);
         txtMoneyToPay.setBackground(Color.white);
        
+    }
+    
+    
+    public void loadDetail() throws SQLException{
+        
+    }
+    
+    public void addData(){
+                        String voucherFloat = String.valueOf(txtVoucher.getText().trim().replace("%", ""));
+                        entity.Contract temp = new Contract(Integer.valueOf(txtContractID.getText()), 
+                        Integer.valueOf(txtCustomerID.getText()), 
+                        LocalDate.parse(txtDayContract.getText(), DateTimeFormatter.ofPattern("d-M-yyyy")),
+                        Integer.valueOf(txtEmployeeID.getText()),
+                        Double.valueOf(txtMoneyToPay.getText()),
+                        Float.valueOf(voucherFloat),
+                        Double.valueOf("0"),
+                        Integer.valueOf(txtNumberOfInstallments.getText()),
+                        String.valueOf(comboMethod.getSelectedItem()));
+                try {
+                    contractDao.addContract(temp);
+
+                } catch (SQLException ex) {
+                    Logger.getLogger(ContractAdd.class.getName()).log(Level.SEVERE, null, ex);
+                }
     }
     
     
