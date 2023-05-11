@@ -9,6 +9,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import connectDB.ConnectDB;
 import entity.Customer;
 import entity.Warranty;
@@ -38,6 +40,25 @@ public class Warranty_DAO {
 		}
 		return temp;
 	}
+	
+	public int getID() throws SQLException {
+		ConnectDB.getInstance().connect();
+		Connection con = ConnectDB.getConnection();
+		ConnectDB.connect();
+		int ID = 0;
+		try {
+			String sql = "SELECT TOP 1 MaPhieu FROM PhieuNhanXetBaoHanh order by MaPhieu desc";
+			java.sql.Statement stm = con.createStatement();
+			ResultSet rs = stm.executeQuery(sql);
+			while (rs.next()) {
+				ID = rs.getInt("MaPhieu");
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return ID;
+	}
+	
 	public void addWarranty(Warranty w) throws SQLException {
 		ConnectDB.getInstance().connect();
 		Connection con = ConnectDB.getConnection();
@@ -58,8 +79,29 @@ public class Warranty_DAO {
 			e.printStackTrace();
 		}finally {
 			stmt.close();
-   }
-}
+		}
+	}
+	
+	public void updateWarranty(int iD, String newPart, String newError, String newPrice) throws SQLException {
+		ConnectDB.getInstance().connect();
+		Connection con = ConnectDB.getConnection();
+		ConnectDB.connect();
+		try {
+			String sql = "update PhieuNhanXetBaoHanh \r\n"
+					+ "set TenLinhKien = ?, Loi = ?, GiaTien = ?\r\n"
+					+ "where MaPhieu = ?";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1, newPart);
+			ps.setString(2, newError);
+			ps.setString(3, newPrice);
+			ps.setInt(4, iD);
+			if(ps.executeUpdate()>0)
+				JOptionPane.showMessageDialog(null, "CẬP NHẬT THÀNH CÔNG");
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "CẬP NHẬT THẤT BẠI");
+			e.printStackTrace();
+		}
+	}
         
 }
      

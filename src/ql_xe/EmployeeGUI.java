@@ -200,7 +200,7 @@ public class EmployeeGUI extends javax.swing.JPanel {
         labelAcademicLevel.setFont(new java.awt.Font("Leelawadee UI", 1, 18)); // NOI18N
         labelAcademicLevel.setForeground(new java.awt.Color(0, 0, 0));
         labelAcademicLevel.setText("Trình Độ Học Vấn:");
-        panelAcademicLevel.add(labelAcademicLevel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 180, 30));
+        panelAcademicLevel.add(labelAcademicLevel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 200, 30));
 
         Header.add(panelAcademicLevel, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 120, 480, 40));
 
@@ -211,6 +211,16 @@ public class EmployeeGUI extends javax.swing.JPanel {
         buttonUpdate.setText("SỬA");
         buttonUpdate.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         buttonUpdate.setIconTextGap(15);
+        buttonUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+					buttonUpdateActionPerformed(evt);
+				} catch (NumberFormatException | SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+        });
         Header.add(buttonUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(1390, 140, 140, 40));
 
         buttonSearch.setBackground(new java.awt.Color(255, 255, 255));
@@ -220,6 +230,11 @@ public class EmployeeGUI extends javax.swing.JPanel {
         buttonSearch.setText("TÌM");
         buttonSearch.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         buttonSearch.setIconTextGap(15);
+        buttonSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonSearchActionPerformed(evt);
+            }
+        });
         Header.add(buttonSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(1390, 190, 140, 40));
 
         buttonDelete.setBackground(new java.awt.Color(255, 255, 255));
@@ -229,6 +244,11 @@ public class EmployeeGUI extends javax.swing.JPanel {
         buttonDelete.setText("XÓA");
         buttonDelete.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         buttonDelete.setIconTextGap(15);
+        buttonDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonDeleteActionPerformed(evt);
+            }
+        });
         Header.add(buttonDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(1390, 90, 140, 40));
 
         buttonAdd1.setBackground(new java.awt.Color(255, 255, 255));
@@ -238,6 +258,17 @@ public class EmployeeGUI extends javax.swing.JPanel {
         buttonAdd1.setText("THÊM");
         buttonAdd1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         buttonAdd1.setIconTextGap(15);
+        buttonAdd1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+					buttonAddActionPerformed(evt);
+					txtEmployeeID.setText(""+(++count));
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+        });
         Header.add(buttonAdd1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1390, 40, 140, 40));
 
         Main.add(Header, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 1558, 250));
@@ -298,12 +329,20 @@ public class EmployeeGUI extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(Main, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
+        
+        jComboBox1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				addComboBoxPerformed(e);
+			}
+		});
     }// </editor-fold>//GEN-END:initComponents
 
     
  // Ẩn hiện các nút Update, Delete khi click nút Lưu + Thêm dữ liệu
     private void buttonAddActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_buttonAddActionPerformed
-    	if(buttonAdd1.getText().equals("Lưu")) {
+    	if(buttonAdd1.getText().equalsIgnoreCase("Lưu")) {
 				Employee e = new Employee(txtEmployeeID.getText(), txtName.getText(), String.valueOf(jComboBox1.getSelectedItem()));
 				if(jComboBox1.getSelectedItem().equals("Nhân Viên Hành Chính")) {
 					AdministrationEmp ae = new AdministrationEmp(txtEmployeeID.getText(), txtName.getText(), 
@@ -326,27 +365,6 @@ public class EmployeeGUI extends javax.swing.JPanel {
     	
     	// Không cần chỉ cần vô sql -> rồi load lại table là được
     	
-    	
-//    	else
-//    	{
-//    		if(jComboBox1.getSelectedItem().equals("Nhân Viên Hành Chính")) {
-//        		AdministrationEmp ae = new AdministrationEmp(txtEmployeeID.getText(), txtName.getText(), 
-//        				String.valueOf(jComboBox1.getSelectedItem()), txtDepartment.getText(), txtAcademicLevel.getText());
-//            	
-//            	String [] rowAd = {ae.getMaNhanVien(), ae.getTenNhanVien(), ae.getChucVu(), ae.getPhongBan(), ae.getHocVan()};
-//        		model.addRow(rowAd);
-//        		JOptionPane.showMessageDialog(this, "Added success");
-//        	}
-//        	
-//        	else {
-//        		TechnicalEmp te = new TechnicalEmp(txtEmployeeID.getText(), txtName.getText(), 
-//        				String.valueOf(jComboBox1.getSelectedItem()), txtDepartment.getText(), Integer.parseInt(txtAcademicLevel.getText()));
-//            	
-//            	String [] rowTech = {te.getMaNhanVien(), te.getTenNhanVien(), te.getChucVu(), "", "", te.getBacTho(), String.valueOf(te.getSoNamKinhNghiem())};
-//        		model.addRow(rowTech);
-//        		JOptionPane.showMessageDialog(this, "Added success");
-//        	}
-//    	}
     	setEditTrue();
 		buttonAdd1.setText("LƯU");
 		buttonAdd1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-save-20.png")));
@@ -357,13 +375,34 @@ public class EmployeeGUI extends javax.swing.JPanel {
     }//GEN-LAST:event_buttonAddActionPerformed
 
     private void buttonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteActionPerformed
-		buttonAdd1.setText("THÊm");
-		buttonAdd1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-add-50 (2) (2).png")));
-		buttonDelete.setText("XÓA");
-		buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-delete-20.png")));
-		buttonSearch.setVisible(true);
-    	buttonUpdate.setVisible(true);
-    	setEditFalse();
+            if (evt.getSource().equals(buttonDelete)) { 
+                if (buttonDelete.getText().equalsIgnoreCase("HỦY")){
+                    buttonUpdate.setText("SỬA");
+                    buttonUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-done-20.png")));
+                    buttonDelete.setText("XÓA");
+                    buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/close_icon.png")));
+                    buttonAdd1.setVisible(true);
+                    buttonSearch.setVisible(true);
+
+                    txtName.setEditable(false);
+                    txtDepartment.setEditable(false);
+                    txtAcademicLevel.setEditable(false);
+                    //background
+                    txtName.setBackground(Color.getHSBColor(0f, 0f,0.79f));
+                    txtDepartment.setBackground(Color.getHSBColor(0f, 0f,0.79f));
+                    txtAcademicLevel.setBackground(Color.getHSBColor(0f, 0f,0.79f));
+                    			buttonAdd1.setText("THÊM");
+			buttonAdd1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-add-50 (2) (2).png")));
+			buttonDelete.setText("XÓA");
+			buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-delete-20.png")));
+			buttonSearch.setVisible(true);
+	    	buttonUpdate.setVisible(true);
+	    	setEditFalse();
+                }
+            }
+
+
+//		}
     	
 //		Header.revalidate();
 //    	Header.repaint();
@@ -371,9 +410,57 @@ public class EmployeeGUI extends javax.swing.JPanel {
 //		Header.add(buttonSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(1400, 190, 140, 40));
     }//GEN-LAST:event_buttonDeleteActionPerformed
 
-   
+
+    private void buttonUpdateActionPerformed(java.awt.event.ActionEvent evt) throws NumberFormatException, SQLException {//GEN-FIRST:event_buttonUpdateActionPerformed
+        if (evt.getSource().equals(buttonUpdate)){
+            if (buttonUpdate.getText().equalsIgnoreCase("SỬA")){
+                    buttonUpdate.setText("OK");
+                    buttonUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-done-20.png")));
+                    buttonDelete.setText("HỦY");
+                    buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/close_icon.png")));
+                    buttonAdd1.setVisible(false);
+                    buttonSearch.setVisible(false);
+
+                    txtName.setEditable(true);
+                    txtDepartment.setEditable(true);
+                    txtAcademicLevel.setEditable(true);
+                    //background
+                    txtName.setBackground(new java.awt.Color(255, 255, 255));
+                    txtDepartment.setBackground(new java.awt.Color(255, 255, 255));
+                    txtAcademicLevel.setBackground(new java.awt.Color(255, 255, 255));
+
+            //    	if(buttonUpdate.getText().equalsIgnoreCase("OK")) {
+            //    		cus_DAO.updateCustomer(Integer.parseInt(txtCustomerID.getText()), txtName.getText(), txtAddress.getText(), txtPhone.getText());
+            //    		updateData();
+            //    	}
+            }
+           
+        }
+        
+       
+    	
+    }//GEN-LAST:event_buttonUpdateActionPerformed
     
+    private void buttonSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSearchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_buttonSearchActionPerformed
     
+    private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNameActionPerformed
+
+    private void txtEmployeeIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEmployeeIDActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtEmployeeIDActionPerformed
+
+    private void txtDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDepartmentActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDepartmentActionPerformed
+
+    private void txtAcademicLevelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAcademicLevelActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtAcademicLevelActionPerformed
+
   //METHOD !IMPORTANT
     public void loadData() throws SQLException {
     	Employee_DAO dao1 = new Employee_DAO();
@@ -425,33 +512,6 @@ public class EmployeeGUI extends javax.swing.JPanel {
     		labelAcademicLevel.setText("Trình Độ Học Vấn: ");
     	}
     }
-    
-    
-    private void buttonUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonUpdateActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_buttonUpdateActionPerformed
-    
-    private void buttonSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSearchActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_buttonSearchActionPerformed
-    
-    private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtNameActionPerformed
-
-    private void txtEmployeeIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEmployeeIDActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtEmployeeIDActionPerformed
-
-    private void txtDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDepartmentActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtDepartmentActionPerformed
-
-    private void txtAcademicLevelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAcademicLevelActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtAcademicLevelActionPerformed
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Header;
     private javax.swing.JPanel Main;
@@ -482,7 +542,7 @@ public class EmployeeGUI extends javax.swing.JPanel {
     private ArrayList<AdministrationEmp> data = new ArrayList<>();
     private ArrayList<TechnicalEmp> data2 = new ArrayList<>();
     private Employee_DAO emp_DAO = new Employee_DAO();
-    
+    private int count  = emp_DAO.getID();
     
     
     

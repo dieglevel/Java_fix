@@ -80,6 +80,7 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
         buttonSearch = new javax.swing.JButton();
         scrollTable = new javax.swing.JScrollPane();
         table = new rojeru_san.complementos.RSTableMetro();
+        
 
         // EVENT
         table.addMouseListener(this);
@@ -198,7 +199,8 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
         buttonAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
-					buttonAddActionPerformed(evt);
+					buttonAddActionPerformed(evt);        
+					txtCustomerID.setText(""+(++count));
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -230,7 +232,12 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
         buttonUpdate.setIconTextGap(15);
         buttonUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonUpdateActionPerformed(evt);
+                try {
+					buttonUpdateActionPerformed(evt);
+				} catch (NumberFormatException | SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         });
         Header.add(buttonUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(1400, 140, 140, 40));
@@ -351,10 +358,10 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
     private void buttonAddActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_buttonAddActionPerformed
     	Customer cus = new Customer(txtCustomerID.getText(), txtName.getText(), txtAddress.getText(), txtPhone.getText());
         String [] row = {cus.getMaKhachHang(), cus.getTenKhachHang(), cus.getDiaChi(), cus.getSoDienThoai()};
-        if(buttonAdd.getText().equals("Lưu")) {
+        if(buttonAdd.getText().equalsIgnoreCase("Lưu")) {
    		 cus_DAO.addCustomer(cus);
-   		 
    		 updateData();
+   		 
         }
         else {
 	        buttonSearch.setVisible(false);
@@ -406,8 +413,33 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
 //		Header.add(buttonSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(1400, 190, 140, 40));
     }//GEN-LAST:event_buttonDeleteActionPerformed
 
-    private void buttonUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonUpdateActionPerformed
-        // TODO add your handling code here:
+    private void buttonUpdateActionPerformed(java.awt.event.ActionEvent evt) throws NumberFormatException, SQLException {//GEN-FIRST:event_buttonUpdateActionPerformed
+        if(table.getSelectedColumn()>0) {
+        	buttonUpdate.setText("OK");
+            buttonUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-done-20.png")));
+            buttonDelete.setText("HỦY");
+            buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/close_icon.png")));
+            buttonAdd.setVisible(false);
+            buttonSearch.setVisible(false);
+            
+            txtName.setEnabled(true);
+        	txtPhone.setEnabled(true);
+        	txtAddress.setEnabled(true);
+        	txtName.setBackground(Color.WHITE);
+        	txtPhone.setBackground(Color.WHITE);
+        	txtAddress.setBackground(Color.WHITE);
+        	if(buttonUpdate.getText().equalsIgnoreCase("OK")) {
+        		cus_DAO.updateCustomer(Integer.parseInt(txtCustomerID.getText()), txtName.getText(), txtAddress.getText(), txtPhone.getText());
+        		updateData();
+        	}
+        }
+        else {
+        	JOptionPane.showMessageDialog(null, "Vui lòng chọn dòng cần sửa");
+        }
+    	
+    	
+    	
+    	
     }//GEN-LAST:event_buttonUpdateActionPerformed
 
 
@@ -437,7 +469,7 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
     private Customer_DAO cus_DAO = new Customer_DAO();
     private DefaultTableModel model;
     private ArrayList<Customer> data = new ArrayList<>();
-    
+    private int count = cus_DAO.getID();
     
     
     
@@ -555,8 +587,8 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
 		if(o.equals(table)) {
 			txtCustomerID.setText(table.getValueAt(table.getSelectedRow(), 0).toString());
 			txtName.setText(table.getValueAt(table.getSelectedRow(), 1).toString());
-			txtPhone.setText(table.getValueAt(table.getSelectedRow(), 2).toString());
 			txtAddress.setText(table.getValueAt(table.getSelectedRow(), 2).toString());
+			txtPhone.setText(table.getValueAt(table.getSelectedRow(), 3).toString());
 		}
 		
 	}

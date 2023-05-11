@@ -59,6 +59,57 @@ public class Customer_DAO {
 		}
 	}
 	
+	public int getID() throws SQLException {
+		ConnectDB.getInstance().connect();
+		Connection con = ConnectDB.getConnection();
+		ConnectDB.connect();
+		int ID = 0;
+		try {
+			String sql = "SELECT TOP 1 MaKhachHang FROM KhachHang order by MaKhachHang desc";
+			Statement stm = con.createStatement();
+			ResultSet rs = stm.executeQuery(sql);
+			while (rs.next()) {
+				ID = rs.getInt("MaKhachHang");
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return ID;
+	}
+	
+	public void updateCustomer(int iD, String newName, String newAddress, String newPhone) throws SQLException {
+		ConnectDB.getInstance().connect();
+		Connection con = ConnectDB.getConnection();
+		ConnectDB.connect();
+		try {
+			String sql = "update KhachHang\r\n"
+					+ "set TenKhachHang = ?, DiaChi = ?, SoDienThoai = ?\r\n"
+					+ "where MaKhachHang = ?";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1, newName);
+			ps.setString(2, newAddress);
+			ps.setString(3, newPhone);
+			ps.setInt(4, iD);
+			if(ps.executeUpdate()>0)
+				JOptionPane.showMessageDialog(null, "CẬP NHẬT THÀNH CÔNG");
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "CẬP NHẬT THẤT BẠI");
+			e.printStackTrace();
+		}
+	}
+	
+	public void searchCustomer(int iD) throws SQLException {
+		ConnectDB.getInstance().connect();
+		Connection con = ConnectDB.getConnection();
+		ConnectDB.connect();
+		try {
+			String sql = "";
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+	
+	
 	public void deleteCustomer(int id) throws SQLException {
 		ConnectDB.getInstance().connect();
 		Connection con = ConnectDB.getConnection();

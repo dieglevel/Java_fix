@@ -11,6 +11,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.Shape;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.RoundRectangle2D;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -36,7 +38,7 @@ import entity.Warranty;
  *
  * @author Admin
  */
-public class WarrantyGUI extends javax.swing.JPanel {
+public class WarrantyGUI extends javax.swing.JPanel implements MouseListener{
 
     /**
      * Creates new form ..
@@ -45,7 +47,7 @@ public class WarrantyGUI extends javax.swing.JPanel {
     public WarrantyGUI() throws SQLException {
         initComponents();
         loadData();        
-       
+        disableTextField();
                 
                 
                 
@@ -296,6 +298,17 @@ public class WarrantyGUI extends javax.swing.JPanel {
         buttonAdd.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         buttonAdd.setIconTextGap(15);
         Header.add(buttonAdd, new org.netbeans.lib.awtextra.AbsoluteConstraints(1390, 40, 140, 40));
+        buttonAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+					buttonAddActionPerformed(evt);
+					txtWarranty.setText(""+(++count));
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+        });
 
         buttonDelete.setBackground(new java.awt.Color(255, 255, 255));
         buttonDelete.setFont(new java.awt.Font("MS Reference Sans Serif", 1, 11)); // NOI18N
@@ -320,7 +333,12 @@ public class WarrantyGUI extends javax.swing.JPanel {
         buttonUpdate.setIconTextGap(15);
         buttonUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonUpdateActionPerformed(evt);
+                try {
+					buttonUpdateActionPerformed(evt);
+				} catch (NumberFormatException | SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         });
         Header.add(buttonUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(1390, 140, 140, 40));
@@ -374,6 +392,7 @@ public class WarrantyGUI extends javax.swing.JPanel {
         table.setShowVerticalLines(true);
         table.setSurrendersFocusOnKeystroke(true);
         table.getTableHeader().setReorderingAllowed(false);
+        table.addMouseListener(this);
         scrollTable.setViewportView(table);
         model = new DefaultTableModel(new String[] {"Mã Bảo Hành", "Mã Hóa Đơn", "Mã Xe", "Mã Nhân Viên", "Ngày Bảo Hành", "Tên Linh Kiện", "Lỗi", "Giá Tiền"},0){
             @Override
@@ -399,6 +418,53 @@ public class WarrantyGUI extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    public void updateData() throws SQLException {
+    	model.setRowCount(0);
+    	loadData();
+    }
+    
+    public void enableTextField() {
+    	txtWarranty.setEnabled(true);
+    	txtContract.setEnabled(true);
+    	txtEmployee.setEnabled(true);
+    	txtMotobikeID.setEnabled(true);
+    	txtWarrantyDate.setEnabled(true);
+    	txtPartName.setEnabled(true);
+    	txtErroName.setEnabled(true);
+    	txtMoney.setEnabled(true);
+    	
+    	
+    	txtWarranty.setBackground(Color.WHITE);
+    	txtContract.setBackground(Color.WHITE);
+    	txtEmployee.setBackground(Color.WHITE);
+    	txtMotobikeID.setBackground(Color.WHITE);
+    	txtWarrantyDate.setBackground(Color.WHITE);
+    	txtPartName.setBackground(Color.WHITE);
+    	txtErroName.setBackground(Color.WHITE);
+    	txtMoney.setBackground(Color.WHITE);
+
+    }
+    
+    public void disableTextField() {
+    	txtWarranty.setEnabled(false);
+    	txtContract.setEnabled(false);
+    	txtEmployee.setEnabled(false);
+    	txtMotobikeID.setEnabled(false);
+    	txtWarrantyDate.setEnabled(false);
+    	txtPartName.setEnabled(false);
+    	txtErroName.setEnabled(false);
+    	txtMoney.setEnabled(false);
+    	
+    	txtWarranty.setBackground(Color.getHSBColor(0f, 0f,0.79f));
+    	txtContract.setBackground(Color.getHSBColor(0f, 0f,0.79f));
+    	txtEmployee.setBackground(Color.getHSBColor(0f, 0f,0.79f));
+    	txtMotobikeID.setBackground(Color.getHSBColor(0f, 0f,0.79f));
+    	txtWarrantyDate.setBackground(Color.getHSBColor(0f, 0f,0.79f));
+    	txtPartName.setBackground(Color.getHSBColor(0f, 0f,0.79f));
+    	txtErroName.setBackground(Color.getHSBColor(0f, 0f,0.79f));
+    	txtMoney.setBackground(Color.getHSBColor(0f, 0f,0.79f));
+
+    }
     
   //METHOD !IMPORTANT
     public void loadData() throws SQLException {
@@ -450,14 +516,45 @@ public class WarrantyGUI extends javax.swing.JPanel {
     private void buttonSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSearchActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_buttonSearchActionPerformed
-
+    
+    // Ẩn hiện các nút Update, Delete khi click nút Lưu + Thêm dữ liệu
+    private void buttonAddActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_buttonAddActionPerformed
+    	
+	if(buttonAdd.getText().equalsIgnoreCase("Lưu")) {
+		Warranty w = new Warranty(txtWarranty.getText(), txtContract.getText(), txtEmployee.getText(), txtMotobikeID.getText(), 
+    			LocalDate.parse(txtWarrantyDate.getText(), DateTimeFormatter.ofPattern("dd-MM-yyyy")), txtPartName.getText(),txtErroName.getText(), Double.parseDouble(txtMoney.getText()));
+    			
+		 war_DAO.addWarranty(w);
+		 updateData();
+	}
+        else {
+	        buttonSearch.setVisible(false);
+	        buttonUpdate.setVisible(false);
+			buttonAdd.setText("LƯU");
+			buttonDelete.setText("HỦY");
+			enableTextField();
+        }
+    	buttonAdd.setText("LƯU");
+    	buttonAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-save-20.png")));
+    	buttonDelete.setText("HỦY");
+    	buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/close_icon.png")));
+    	buttonSearch.setVisible(false);
+    	buttonUpdate.setVisible(false);
+    	
+    	
+//    	Header.remove(buttonUpdate);
+//    	Header.remove(buttonSearch);
+//    	Header.revalidate();
+//    	Header.repaint();
+    }//GEN-LAST:event_buttonAddActionPerformed
     private void buttonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteActionPerformed
-		buttonAdd.setText("Thêm");
+		buttonAdd.setText("THÊM");
 		buttonAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-add-50 (2) (2).png")));
-		buttonDelete.setText("Xóa");
+		buttonDelete.setText("XÓA");
 		buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-delete-20.png")));
 		buttonSearch.setVisible(true);
     	buttonUpdate.setVisible(true);
+    	disableTextField();
     	
 //		Header.revalidate();
 //    	Header.repaint();
@@ -465,8 +562,24 @@ public class WarrantyGUI extends javax.swing.JPanel {
 //		Header.add(buttonSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(1400, 190, 140, 40));
     }//GEN-LAST:event_buttonDeleteActionPerformed
 
-    private void buttonUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonUpdateActionPerformed
-        // TODO add your handling code here:
+    private void buttonUpdateActionPerformed(java.awt.event.ActionEvent evt) throws NumberFormatException, SQLException {//GEN-FIRST:event_buttonUpdateActionPerformed
+        buttonUpdate.setText("OK");
+        buttonUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-done-20.png")));
+        buttonDelete.setText("HỦY");
+        buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/close_icon.png")));
+        buttonAdd.setVisible(false);
+        buttonSearch.setVisible(false);
+        
+    	txtPartName.setEnabled(true);
+    	txtErroName.setEnabled(true);
+    	txtMoney.setEnabled(true);
+    	txtPartName.setBackground(Color.WHITE);
+    	txtErroName.setBackground(Color.WHITE);
+    	txtMoney.setBackground(Color.WHITE);
+    	if(buttonUpdate.getText().equalsIgnoreCase("OK")) {
+    		war_DAO.updateWarranty(Integer.parseInt(txtWarranty.getText()), txtPartName.getText(), txtErroName.getText(), txtMoney.getText());
+    		updateData();
+    	}
     }//GEN-LAST:event_buttonUpdateActionPerformed
 
     private void txtMoneyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMoneyActionPerformed
@@ -516,7 +629,7 @@ public class WarrantyGUI extends javax.swing.JPanel {
     private DefaultTableModel model;
     private ArrayList<Warranty> data = new ArrayList<>();
     private Warranty_DAO war_DAO = new Warranty_DAO();
-    
+    private int count = war_DAO.getID();
     
     
     
@@ -542,7 +655,7 @@ public class WarrantyGUI extends javax.swing.JPanel {
          return shape.contains(x, y);
     }
 }
-
+    
     public class RoundBorderArea implements Border {
 
         private int radius;
@@ -574,5 +687,44 @@ public class WarrantyGUI extends javax.swing.JPanel {
         }
 
     }
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		Object o = e.getSource();
+		if(o.equals(table)) {
+			txtWarranty.setText(table.getValueAt(table.getSelectedRow(), 0).toString());
+			txtContract.setText(table.getValueAt(table.getSelectedRow(), 1).toString());
+			txtMotobikeID.setText(table.getValueAt(table.getSelectedRow(), 2).toString());
+			txtEmployee.setText(table.getValueAt(table.getSelectedRow(), 3).toString());
+			txtWarrantyDate.setText(table.getValueAt(table.getSelectedRow(), 4).toString());
+			txtPartName.setText(table.getValueAt(table.getSelectedRow(), 5).toString());
+			txtErroName.setText(table.getValueAt(table.getSelectedRow(), 6).toString());
+			txtMoney.setText(table.getValueAt(table.getSelectedRow(), 7).toString());
+		}
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
     
 }

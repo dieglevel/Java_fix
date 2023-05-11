@@ -60,6 +60,26 @@ public class Employee_DAO {
 		return temp;
 	}
 	
+	public int getID() throws SQLException {
+		ConnectDB.getInstance().connect();
+		Connection con = ConnectDB.getConnection();
+		ConnectDB.connect();
+		
+		int ID = 0;
+		
+		try {
+			String sql = "select top 1 MaNhanVien from NhanVien order by MaNhanVien desc";
+			java.sql.Statement stm = con.createStatement();
+			ResultSet rs = stm.executeQuery(sql);
+			while(rs.next()) {
+				ID = rs.getInt("MaNhanVien");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ID;
+	}
+	
 	public void addEmployee(Employee e) throws SQLException {
 		ConnectDB.getInstance().connect();
 		Connection con = ConnectDB.getConnection();
