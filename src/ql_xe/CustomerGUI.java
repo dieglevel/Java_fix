@@ -16,6 +16,8 @@ import java.awt.event.MouseListener;
 import java.awt.geom.RoundRectangle2D;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -342,6 +344,40 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
 		}
     }
     
+    public boolean validData() {
+    	String cusID = txtCustomerID.getText().trim();
+    	String cusName = txtName.getText().trim();
+    	String address = txtAddress.getText().trim();
+    	String phone = txtPhone.getText().trim();
+    	
+    	Pattern pID = Pattern.compile("\\d+");
+    	Matcher mID = pID.matcher(cusID);
+    	if(!(mID.matches())) {
+    		JOptionPane.showMessageDialog(null, "Mã khách hàng phải là kí tự số");
+    		return false;
+    	}
+    	
+    	Pattern pName = Pattern.compile("^[a-zA-Z' ]+$");
+    	Matcher mName = pName.matcher(cusName);
+    	if(!(mName.matches())) {
+    		JOptionPane.showMessageDialog(null, "Tên Khách Hàng phải có dạng X(X X ...)");
+    		return false;
+    	}
+    	
+    	if(address.equalsIgnoreCase("")) {
+    		JOptionPane.showMessageDialog(null, "Địa chỉ không dược để trống");
+    		return false;
+    	}
+    	
+    	Pattern pPhone = Pattern.compile("^[0-9]{10}$");
+    	Matcher mPhone = pPhone.matcher(phone);
+    	if(!(mPhone.matches())) {
+    		JOptionPane.showMessageDialog(null, "Số điện thoại phải có 10 số");
+    		return false;
+    	}
+    	return true;
+    }
+    
     private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNameActionPerformed
@@ -374,9 +410,10 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
     	Customer cus = new Customer(txtCustomerID.getText(), txtName.getText(), txtAddress.getText(), txtPhone.getText());
         String [] row = {cus.getMaKhachHang(), cus.getTenKhachHang(), cus.getDiaChi(), cus.getSoDienThoai()};
         if(buttonAdd.getText().equalsIgnoreCase("Lưu")) {
-   		 cus_DAO.addCustomer(cus);
-   		 updateData();
-   		 
+	        if(validData()) {
+		    	cus_DAO.addCustomer(cus);
+		  		updateData();
+	        }
         }
         else {
 	        buttonSearch.setVisible(false);
@@ -392,11 +429,6 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
     	buttonSearch.setVisible(false);
     	buttonUpdate.setVisible(false);
     	
-    	
-//    	Header.remove(buttonUpdate);
-//    	Header.remove(buttonSearch);
-//    	Header.revalidate();
-//    	Header.repaint();
     }//GEN-LAST:event_buttonAddActionPerformed
     
     private void buttonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteActionPerformed
@@ -443,8 +475,10 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
             	
         	}
         	else if(buttonUpdate.getText().equalsIgnoreCase("OK")) {
-        		cus_DAO.updateCustomer(Integer.parseInt(txtCustomerID.getText()), txtName.getText(), txtAddress.getText(), txtPhone.getText());
-        		updateData();
+        		if(validData()) {
+        			cus_DAO.updateCustomer(Integer.parseInt(txtCustomerID.getText()), txtName.getText(), txtAddress.getText(), txtPhone.getText());
+            		updateData();
+        		}
         	}
         }
     }//GEN-LAST:event_buttonUpdateActionPerformed

@@ -20,6 +20,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -493,6 +495,74 @@ public class WarrantyGUI extends javax.swing.JPanel implements MouseListener{
 		}
     }
     
+    public boolean validData() {
+    	String warID = txtWarranty.getText().trim();
+    	String contractID = txtContract.getText().trim();
+    	String motoID = txtMotobikeID.getText().trim();
+    	String empID = txtEmployee.getText().trim();
+    	String warDate = txtWarrantyDate.getText().trim();
+    	String partName = txtPartName.getText().trim();
+    	String errorName = txtErroName.getText().trim();
+    	String price = txtMoney.getText().trim();
+    	
+    	Pattern pWarID = Pattern.compile("\\d+");
+    	Matcher mWarID = pWarID.matcher(warID);
+    	if(!(mWarID.matches())) {
+    		JOptionPane.showMessageDialog(null, "Mã phiếu bảo hành phải là kí tự số");
+    		return false;
+    	}
+    	
+    	Pattern pConID = Pattern.compile("\\d+");
+    	Matcher mConID = pConID.matcher(contractID);
+    	if(!(mConID.matches())) {
+    		JOptionPane.showMessageDialog(null, "Mã hợp đồng phải là kí tự số");
+    		return false;
+    	}
+    	
+    	Pattern pMotoID = Pattern.compile("\\d+");
+    	Matcher mMotoID = pMotoID.matcher(motoID);
+    	if(!(mMotoID.matches())) {
+    		JOptionPane.showMessageDialog(null, "Mã xe phải là kí tự số");
+    		return false;
+    	}
+    	
+    	Pattern pEmpID = Pattern.compile("\\d+");
+    	Matcher mEmpID = pEmpID.matcher(empID);
+    	if(!(mEmpID.matches())) {
+    		JOptionPane.showMessageDialog(null, "Mã nhân viên phải là kí tự số");
+    		return false;
+    	}
+    	
+    	try {
+    		LocalDate.parse(warDate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Ngày theo có dạng dd-MM-yyyy");
+			return false;
+		}
+    	
+    	if(partName.equalsIgnoreCase("")) {
+    		JOptionPane.showMessageDialog(null, "Tên linh kiện không được để trống");
+    		return false;
+    	}
+    	
+    	if(errorName.equalsIgnoreCase("")) {
+    		JOptionPane.showMessageDialog(null, "Lỗi không được để trống (Không có lỗi để 'KHÔNG')");
+    		return false;
+    	}
+    	
+    	if(price.equalsIgnoreCase("")) {
+    		JOptionPane.showMessageDialog(null, "Giá tiền không được để trống");
+    		return false;
+    	}
+    	else if(Integer.parseInt(price)<0) {
+    		JOptionPane.showMessageDialog(null, "Giá tiền không được âm");
+    		return false;
+    	}
+    	
+    	
+    	return true;
+    }
+    
     private void txtContractActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtContractActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtContractActionPerformed
@@ -531,11 +601,13 @@ public class WarrantyGUI extends javax.swing.JPanel implements MouseListener{
     private void buttonAddActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_buttonAddActionPerformed
     	
 	if(buttonAdd.getText().equalsIgnoreCase("Lưu")) {
-		Warranty w = new Warranty(txtWarranty.getText(), txtContract.getText(), txtEmployee.getText(), txtMotobikeID.getText(), 
-    			LocalDate.parse(txtWarrantyDate.getText(), DateTimeFormatter.ofPattern("dd-MM-yyyy")), txtPartName.getText(),txtErroName.getText(), Double.parseDouble(txtMoney.getText()));
-    			
-		 war_DAO.addWarranty(w);
-		 updateData();
+		if(validData()) {
+			Warranty w = new Warranty(txtWarranty.getText(), txtContract.getText(), txtEmployee.getText(), txtMotobikeID.getText(), 
+	    			LocalDate.parse(txtWarrantyDate.getText(), DateTimeFormatter.ofPattern("dd-MM-yyyy")), txtPartName.getText(),txtErroName.getText(), Double.parseDouble(txtMoney.getText()));
+	    			
+			 war_DAO.addWarranty(w);
+			 updateData();
+		}
 	}
         else {
 	        buttonSearch.setVisible(false);
@@ -608,8 +680,10 @@ public class WarrantyGUI extends javax.swing.JPanel implements MouseListener{
             	txtMoney.setBackground(Color.WHITE);
         	}
         	else if(buttonUpdate.getText().equalsIgnoreCase("OK")) {
-        		war_DAO.updateWarranty(Integer.parseInt(txtWarranty.getText()), txtPartName.getText(), txtErroName.getText(), txtMoney.getText());
-        		updateData();
+        		if(validData()) {
+        			war_DAO.updateWarranty(Integer.parseInt(txtWarranty.getText()), txtPartName.getText(), txtErroName.getText(), txtMoney.getText());
+            		updateData();
+        		}
         	}
         }
     	

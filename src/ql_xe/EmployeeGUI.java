@@ -20,6 +20,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -347,25 +349,96 @@ public class EmployeeGUI extends javax.swing.JPanel implements MouseListener{
     	loadData();
     }
     
+    public boolean validDataAdEmp() {
+    	String empID = txtEmployeeID.getText().trim();
+    	String empName = txtName.getText().trim();
+    	String depart = txtDepartment.getText().trim();
+    	String level = txtAcademicLevel.getText().trim();
+    	
+    	Pattern pID = Pattern.compile("\\d+");
+    	Matcher mID = pID.matcher(empID);
+    	if(!(mID.matches())) {
+    		JOptionPane.showMessageDialog(null, "Mã nhân viên phải là kí tự số");
+    		return false;
+    	}
+    	Pattern pName = Pattern.compile("^[a-zA-Z' ]+$");
+    	Matcher mName = pName.matcher(empName);
+    	if(!(mName.matches())) {
+    		JOptionPane.showMessageDialog(null, "Tên nhân viên phải có dạng X(X X ...)");
+    		return false;
+    	}
+    	
+    	if(depart.equalsIgnoreCase("")) {
+    		JOptionPane.showMessageDialog(null, "Phòng ban không được để trống");
+    		return false;
+    	}
+    	
+    	if(level.equalsIgnoreCase("")) {
+    		JOptionPane.showMessageDialog(null, "Trình độ học vấn không được để trống");
+    		return false;
+    	}
+    	return true;
+    }
+    
+    public boolean validDataTechEmp() {
+    	String empID = txtEmployeeID.getText().trim();
+    	String empName = txtName.getText().trim();
+    	String depart = txtDepartment.getText().trim();
+    	String level = txtAcademicLevel.getText().trim();
+    	
+    	Pattern pID = Pattern.compile("\\d+");
+    	Matcher mID = pID.matcher(empID);
+    	if(!(mID.matches())) {
+    		JOptionPane.showMessageDialog(null, "Mã nhân viên phải là kí tự số");
+    		return false;
+    	}
+    	Pattern pName = Pattern.compile("^[a-zA-Z' ]+$");
+    	Matcher mName = pName.matcher(empName);
+    	if(!(mName.matches())) {
+    		JOptionPane.showMessageDialog(null, "Tên nhân viên phải có dạng X(X X ...)");
+    		return false;
+    	}
+    	
+    	if(depart.equalsIgnoreCase("")) {
+    		JOptionPane.showMessageDialog(null, "Bậc thợ không được để trống");
+    		return false;
+    	}
+    	
+    	if(level.equalsIgnoreCase("")) {
+    		JOptionPane.showMessageDialog(null, "Số năm kinh nghiệm không được để trống");
+    		return false;
+    	}
+    	else if(Integer.parseInt(level)<=0) {
+    		JOptionPane.showMessageDialog(null, "Số năm kinh nghiệm phải lớn hơn 0");
+    		return false;
+    	}
+    	return true;
+    }
+    
  // Ẩn hiện các nút Update, Delete khi click nút Lưu + Thêm dữ liệu
     private void buttonAddActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_buttonAddActionPerformed
     	if(buttonAdd1.getText().equalsIgnoreCase("Lưu")) {
 				Employee e = new Employee(txtEmployeeID.getText(), txtName.getText(), String.valueOf(jComboBox1.getSelectedItem()));
 				if(jComboBox1.getSelectedItem().equals("Nhân Viên Hành Chính")) {
-					AdministrationEmp ae = new AdministrationEmp(txtEmployeeID.getText(), txtName.getText(), 
-	        				String.valueOf(jComboBox1.getSelectedItem()), txtDepartment.getText(), txtAcademicLevel.getText());
-					emp_DAO.addEmployee(e);
-					emp_DAO.addAdEmp(ae);
-					JOptionPane.showMessageDialog(null, "Đã lưu vào Database");
+					if(validDataAdEmp()) {
+						AdministrationEmp ae = new AdministrationEmp(txtEmployeeID.getText(), txtName.getText(), 
+		        				String.valueOf(jComboBox1.getSelectedItem()), txtDepartment.getText(), txtAcademicLevel.getText());
+						emp_DAO.addEmployee(e);
+						emp_DAO.addAdEmp(ae);
+						JOptionPane.showMessageDialog(null, "Đã lưu vào Database");
+					}
 				}
 				
 				else {
-					TechnicalEmp te = new TechnicalEmp(txtEmployeeID.getText(), txtName.getText(), 
-	        				String.valueOf(jComboBox1.getSelectedItem()), txtDepartment.getText(), Integer.parseInt(txtAcademicLevel.getText()));
-	            	
-					emp_DAO.addEmployee(e);
-					emp_DAO.addTechEmp(te);
-					JOptionPane.showMessageDialog(null, "Đã lưu vào Database");
+					if(validDataTechEmp()) {
+						TechnicalEmp te = new TechnicalEmp(txtEmployeeID.getText(), txtName.getText(), 
+		        				String.valueOf(jComboBox1.getSelectedItem()), txtDepartment.getText(), Integer.parseInt(txtAcademicLevel.getText()));
+		            	
+						emp_DAO.addEmployee(e);
+						emp_DAO.addTechEmp(te);
+						JOptionPane.showMessageDialog(null, "Đã lưu vào Database");
+					}
+					
 				}
 				loadData();
 		}
@@ -438,14 +511,18 @@ public class EmployeeGUI extends javax.swing.JPanel implements MouseListener{
             }
             else if(buttonUpdate.getText().equalsIgnoreCase("OK")) {
             	if (model.getValueAt(table.getSelectedRow(), 2).toString().equalsIgnoreCase("Nhân Viên Hành Chính")){
-            		emp_DAO.updateEmp(Integer.parseInt(txtEmployeeID.getText()), txtName.getText());
-	        		emp_DAO.updateAdEmp(Integer.parseInt(txtEmployeeID.getText()), txtDepartment.getText(), txtAcademicLevel.getText());
-	        		updateData();
+            		if(validDataAdEmp()) {
+            			emp_DAO.updateEmp(Integer.parseInt(txtEmployeeID.getText()), txtName.getText());
+    	        		emp_DAO.updateAdEmp(Integer.parseInt(txtEmployeeID.getText()), txtDepartment.getText(), txtAcademicLevel.getText());
+    	        		updateData();
+            		}
             	}
             	else {
-            		emp_DAO.updateEmp(Integer.parseInt(txtEmployeeID.getText()), txtName.getText());
-	        		emp_DAO.updateTechEmp(Integer.parseInt(txtEmployeeID.getText()), txtDepartment.getText(), txtAcademicLevel.getText());
-	        		updateData();
+            		if(validDataTechEmp()) {
+            			emp_DAO.updateEmp(Integer.parseInt(txtEmployeeID.getText()), txtName.getText());
+    	        		emp_DAO.updateTechEmp(Integer.parseInt(txtEmployeeID.getText()), txtDepartment.getText(), txtAcademicLevel.getText());
+    	        		updateData();
+            		}
             	}
         	}    
         }
