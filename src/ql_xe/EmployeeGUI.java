@@ -13,6 +13,8 @@ import java.awt.Insets;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.RoundRectangle2D;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -38,7 +40,7 @@ import entity.Warranty;
  *
  * @author Admin
  */
-public class EmployeeGUI extends javax.swing.JPanel {
+public class EmployeeGUI extends javax.swing.JPanel implements MouseListener{
 
     /**
      * Creates new form ..
@@ -306,6 +308,7 @@ public class EmployeeGUI extends javax.swing.JPanel {
         table.setShowVerticalLines(true);
         table.setSurrendersFocusOnKeystroke(true);
         table.getTableHeader().setReorderingAllowed(false);
+        table.addMouseListener(this);
         scrollTable.setViewportView(table);
         model = new DefaultTableModel(new String[] {"Mã Nhân Viên", "Tên Nhân Viên", "Chức Vụ", "Phòng Ban", "Trình Độ Học Vấn", "Bậc Thợ","Số Năm Kinh Nghiệm"},0){
             @Override
@@ -339,6 +342,10 @@ public class EmployeeGUI extends javax.swing.JPanel {
 		});
     }// </editor-fold>//GEN-END:initComponents
 
+    public void updateData() throws SQLException {
+    	model.setRowCount(0);
+    	loadData();
+    }
     
  // Ẩn hiện các nút Update, Delete khi click nút Lưu + Thêm dữ liệu
     private void buttonAddActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_buttonAddActionPerformed
@@ -428,21 +435,72 @@ public class EmployeeGUI extends javax.swing.JPanel {
                     txtName.setBackground(new java.awt.Color(255, 255, 255));
                     txtDepartment.setBackground(new java.awt.Color(255, 255, 255));
                     txtAcademicLevel.setBackground(new java.awt.Color(255, 255, 255));
-
-            //    	if(buttonUpdate.getText().equalsIgnoreCase("OK")) {
-            //    		cus_DAO.updateCustomer(Integer.parseInt(txtCustomerID.getText()), txtName.getText(), txtAddress.getText(), txtPhone.getText());
-            //    		updateData();
-            //    	}
             }
-           
+            else if(buttonUpdate.getText().equalsIgnoreCase("OK")) {
+            	if (model.getValueAt(table.getSelectedRow(), 2).toString().equalsIgnoreCase("Nhân Viên Hành Chính")){
+            		emp_DAO.updateEmp(Integer.parseInt(txtEmployeeID.getText()), txtName.getText());
+	        		emp_DAO.updateAdEmp(Integer.parseInt(txtEmployeeID.getText()), txtDepartment.getText(), txtAcademicLevel.getText());
+	        		updateData();
+            	}
+            	else {
+            		emp_DAO.updateEmp(Integer.parseInt(txtEmployeeID.getText()), txtName.getText());
+	        		emp_DAO.updateTechEmp(Integer.parseInt(txtEmployeeID.getText()), txtDepartment.getText(), txtAcademicLevel.getText());
+	        		updateData();
+            	}
+        	}    
         }
-        
-       
     	
     }//GEN-LAST:event_buttonUpdateActionPerformed
     
     private void buttonSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSearchActionPerformed
-        // TODO add your handling code here:
+    	if(evt.getSource().equals(buttonSearch)) {
+    		if(jComboBox1.getSelectedItem().equals("Nhân Viên Hành Chính")) {
+    			String text = JOptionPane.showInputDialog("Nhập dữ liệu cần tìm: ");
+    			try {
+    				data = emp_DAO.searchAdEmp(text);
+    				// load dữ liệuu tìm được
+    		    	model.setRowCount(0);
+    		    	table.clearSelection();
+		    		for (AdministrationEmp ae : data) {
+		    			model.addRow(new String[] {ae.getMaNhanVien(),
+		    										ae.getTenNhanVien(),
+		    										ae.getChucVu(),
+		    										ae.getPhongBan(),
+		    										ae.getHocVan()
+		    			});
+		    		}
+
+    			} catch (SQLException e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    			}
+    		}
+    		else {
+    			String text = JOptionPane.showInputDialog("Nhập dữ liệu cần tìm: ");
+    			try {
+    				data = emp_DAO.searchAdEmp(text);
+    				// load dữ liệuu tìm được
+    		    	model.setRowCount(0);
+    		    	table.clearSelection();
+    		    	for (TechnicalEmp te : data2) {
+    					model.addRow(new String[] {te.getMaNhanVien(),
+    												te.getTenNhanVien(),
+    												te.getChucVu(),
+    												"",
+    												"",
+    												te.getBacTho(),
+    												String.valueOf(te.getSoNamKinhNghiem())
+    					});
+
+    				}
+
+    			} catch (SQLException e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    			}
+    		}
+			
+       }
     }//GEN-LAST:event_buttonSearchActionPerformed
     
     private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
@@ -635,6 +693,49 @@ public class EmployeeGUI extends javax.swing.JPanel {
     	txtDepartment.setText("");
     	txtAcademicLevel.setText("");
     }
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		Object o = e.getSource();
+		if(o.equals(table)) {
+			txtEmployeeID.setText(table.getValueAt(table.getSelectedRow(), 0).toString());
+			txtName.setText(table.getValueAt(table.getSelectedRow(), 1).toString());
+			if (model.getValueAt(table.getSelectedRow(), 2).toString().equalsIgnoreCase("Nhân Viên Hành Chính")){
+				jComboBox1.setSelectedIndex(0);
+				txtDepartment.setText(table.getValueAt(table.getSelectedRow(), 3).toString());
+				txtAcademicLevel.setText(table.getValueAt(table.getSelectedRow(), 4).toString());
+			}
+			else {
+				jComboBox1.setSelectedIndex(1);
+				txtDepartment.setText(table.getValueAt(table.getSelectedRow(), 5).toString());
+				txtAcademicLevel.setText(table.getValueAt(table.getSelectedRow(), 6).toString());
+			}
+		}
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
     
     
 }

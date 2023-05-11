@@ -514,7 +514,17 @@ public class WarrantyGUI extends javax.swing.JPanel implements MouseListener{
     }//GEN-LAST:event_txtEmployeeActionPerformed
 
     private void buttonSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSearchActionPerformed
-        // TODO add your handling code here:
+    	if(evt.getSource().equals(buttonSearch)) {
+			String text = JOptionPane.showInputDialog("Nhập dữ liệu cần tìm: ");
+			try {
+				data = war_DAO.searchWarranty(text);
+				loadTable();
+			
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+       }
     }//GEN-LAST:event_buttonSearchActionPerformed
     
     // Ẩn hiện các nút Update, Delete khi click nút Lưu + Thêm dữ liệu
@@ -547,39 +557,63 @@ public class WarrantyGUI extends javax.swing.JPanel implements MouseListener{
 //    	Header.revalidate();
 //    	Header.repaint();
     }//GEN-LAST:event_buttonAddActionPerformed
-    private void buttonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteActionPerformed
-		buttonAdd.setText("THÊM");
-		buttonAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-add-50 (2) (2).png")));
-		buttonDelete.setText("XÓA");
-		buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-delete-20.png")));
-		buttonSearch.setVisible(true);
-    	buttonUpdate.setVisible(true);
-    	disableTextField();
-    	
-//		Header.revalidate();
-//    	Header.repaint();
-//		Header.add(buttonUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(1400, 140, 140, 40));
-//		Header.add(buttonSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(1400, 190, 140, 40));
-    }//GEN-LAST:event_buttonDeleteActionPerformed
+    private void buttonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteActionPerforme
+    	if (evt.getSource().equals(buttonDelete)) { 
+            if (buttonDelete.getText().equalsIgnoreCase("HỦY")){
+                buttonUpdate.setText("SỬA");
+                buttonUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-done-20.png")));
+                buttonDelete.setText("XÓA");
+                buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/close_icon.png")));
+                buttonAdd.setVisible(true);
+                buttonSearch.setVisible(true);
+
+                txtWarranty.setEditable(false);
+                txtContract.setEditable(false);
+                txtEmployee.setEditable(false);
+                txtMotobikeID.setEditable(false);
+                txtWarrantyDate.setEditable(false);
+                //background
+                txtWarranty.setBackground(Color.getHSBColor(0f, 0f,0.79f));
+                txtContract.setBackground(Color.getHSBColor(0f, 0f,0.79f));
+                txtEmployee.setBackground(Color.getHSBColor(0f, 0f,0.79f));
+                txtMotobikeID.setBackground(Color.getHSBColor(0f, 0f,0.79f));
+                txtWarrantyDate.setBackground(Color.getHSBColor(0f, 0f,0.79f));
+               
+		        buttonAdd.setText("THÊM");
+				buttonAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-add-50 (2) (2).png")));
+				buttonDelete.setText("XÓA");
+				buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-delete-20.png")));
+				buttonSearch.setVisible(true);
+		    	buttonUpdate.setVisible(true);
+		    	disableTextField();
+            }
+        }
+	}//GEN-LAST:event_buttonDeleteActionPerformed
 
     private void buttonUpdateActionPerformed(java.awt.event.ActionEvent evt) throws NumberFormatException, SQLException {//GEN-FIRST:event_buttonUpdateActionPerformed
-        buttonUpdate.setText("OK");
-        buttonUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-done-20.png")));
-        buttonDelete.setText("HỦY");
-        buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/close_icon.png")));
-        buttonAdd.setVisible(false);
-        buttonSearch.setVisible(false);
+        if(evt.getSource().equals(buttonUpdate)) {
+        	if(buttonUpdate.getText().equalsIgnoreCase("SỬA")) {
+        		buttonUpdate.setText("OK");
+                buttonUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-done-20.png")));
+                buttonDelete.setText("HỦY");
+                buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/close_icon.png")));
+                buttonAdd.setVisible(false);
+                buttonSearch.setVisible(false);
+                
+            	txtPartName.setEnabled(true);
+            	txtErroName.setEnabled(true);
+            	txtMoney.setEnabled(true);
+            	txtPartName.setBackground(Color.WHITE);
+            	txtErroName.setBackground(Color.WHITE);
+            	txtMoney.setBackground(Color.WHITE);
+        	}
+        	else if(buttonUpdate.getText().equalsIgnoreCase("OK")) {
+        		war_DAO.updateWarranty(Integer.parseInt(txtWarranty.getText()), txtPartName.getText(), txtErroName.getText(), txtMoney.getText());
+        		updateData();
+        	}
+        }
+    	
         
-    	txtPartName.setEnabled(true);
-    	txtErroName.setEnabled(true);
-    	txtMoney.setEnabled(true);
-    	txtPartName.setBackground(Color.WHITE);
-    	txtErroName.setBackground(Color.WHITE);
-    	txtMoney.setBackground(Color.WHITE);
-    	if(buttonUpdate.getText().equalsIgnoreCase("OK")) {
-    		war_DAO.updateWarranty(Integer.parseInt(txtWarranty.getText()), txtPartName.getText(), txtErroName.getText(), txtMoney.getText());
-    		updateData();
-    	}
     }//GEN-LAST:event_buttonUpdateActionPerformed
 
     private void txtMoneyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMoneyActionPerformed

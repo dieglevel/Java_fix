@@ -251,7 +251,12 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
         buttonSearch.setIconTextGap(15);
         buttonSearch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonSearchActionPerformed(evt);
+                try {
+					buttonSearchActionPerformed(evt);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         });
         Header.add(buttonSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(1400, 190, 140, 40));
@@ -349,8 +354,18 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtPhoneActionPerformed
 
-    private void buttonSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSearchActionPerformed
-        // TODO add your handling code here:
+    private void buttonSearchActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_buttonSearchActionPerformed
+       if(evt.getSource().equals(buttonSearch)) {
+			String text = JOptionPane.showInputDialog("Nhập dữ liệu cần tìm: ");
+			try {
+				data = cus_DAO.searchCustomer(text);
+				loadTable();
+			
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+       }
     }//GEN-LAST:event_buttonSearchActionPerformed
     
     
@@ -385,61 +400,53 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
     }//GEN-LAST:event_buttonAddActionPerformed
     
     private void buttonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteActionPerformed
-		if(buttonDelete.getText().equalsIgnoreCase("HỦY")) {
-			buttonAdd.setText("THÊM");
-			buttonAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-add-50 (2) (2).png")));
-			buttonDelete.setText("XÓA");
-			buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-delete-20.png")));
-			buttonSearch.setVisible(true);
-	    	buttonUpdate.setVisible(true);
-	    	disableTextField();
-		}
-		else if(buttonDelete.getText().equalsIgnoreCase("XÓA")) {
-			cus_DAO = new Customer_DAO();
-			try {
-				cus_DAO.deleteCustomer(Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString()));
-				updateData();
-			} catch (NumberFormatException | SQLException e) {
-				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(null, "XÓA THẤT BẠI");
-				e.printStackTrace();
-			}
-		}
-    	
-    	
-//		Header.revalidate();
-//    	Header.repaint();
-//		Header.add(buttonUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(1400, 140, 140, 40));
-//		Header.add(buttonSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(1400, 190, 140, 40));
-    }//GEN-LAST:event_buttonDeleteActionPerformed
+    	if (evt.getSource().equals(buttonDelete)) { 
+            if (buttonDelete.getText().equalsIgnoreCase("HỦY")){
+                buttonUpdate.setText("SỬA");
+                buttonUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-done-20.png")));
+                buttonDelete.setText("XÓA");
+                buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/close_icon.png")));
+                buttonAdd.setVisible(true);
+                buttonSearch.setVisible(true);
 
+                txtCustomerID.setEditable(false);
+                //background
+                txtCustomerID.setBackground(Color.getHSBColor(0f, 0f,0.79f));
+               
+		        buttonAdd.setText("THÊM");
+				buttonAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-add-50 (2) (2).png")));
+				buttonDelete.setText("XÓA");
+				buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-delete-20.png")));
+				buttonSearch.setVisible(true);
+		    	buttonUpdate.setVisible(true);
+		    	setEditFalse();
+            }
+        }
+	}//GEN-LAST:event_buttonDeleteActionPerformed
+    	
     private void buttonUpdateActionPerformed(java.awt.event.ActionEvent evt) throws NumberFormatException, SQLException {//GEN-FIRST:event_buttonUpdateActionPerformed
-        if(table.getSelectedColumn()>0) {
-        	buttonUpdate.setText("OK");
-            buttonUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-done-20.png")));
-            buttonDelete.setText("HỦY");
-            buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/close_icon.png")));
-            buttonAdd.setVisible(false);
-            buttonSearch.setVisible(false);
-            
-            txtName.setEnabled(true);
-        	txtPhone.setEnabled(true);
-        	txtAddress.setEnabled(true);
-        	txtName.setBackground(Color.WHITE);
-        	txtPhone.setBackground(Color.WHITE);
-        	txtAddress.setBackground(Color.WHITE);
-        	if(buttonUpdate.getText().equalsIgnoreCase("OK")) {
+        if(evt.getSource().equals(buttonUpdate)) {
+        	if(buttonUpdate.getText().equalsIgnoreCase("SỬA")) {
+        		buttonUpdate.setText("OK");
+                buttonUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-done-20.png")));
+                buttonDelete.setText("HỦY");
+                buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/close_icon.png")));
+                buttonAdd.setVisible(false);
+                buttonSearch.setVisible(false);
+                
+                txtName.setEnabled(true);
+            	txtPhone.setEnabled(true);
+            	txtAddress.setEnabled(true);
+            	txtName.setBackground(Color.WHITE);
+            	txtPhone.setBackground(Color.WHITE);
+            	txtAddress.setBackground(Color.WHITE);
+            	
+        	}
+        	else if(buttonUpdate.getText().equalsIgnoreCase("OK")) {
         		cus_DAO.updateCustomer(Integer.parseInt(txtCustomerID.getText()), txtName.getText(), txtAddress.getText(), txtPhone.getText());
         		updateData();
         	}
         }
-        else {
-        	JOptionPane.showMessageDialog(null, "Vui lòng chọn dòng cần sửa");
-        }
-    	
-    	
-    	
-    	
     }//GEN-LAST:event_buttonUpdateActionPerformed
 
 

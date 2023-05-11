@@ -98,50 +98,34 @@ public class Customer_DAO {
 		}
 	}
 	
-	public void searchCustomer(int iD) throws SQLException {
+	public ArrayList<Customer> searchCustomer(String dataSearch) throws SQLException {
+		ArrayList<Customer> temp = new ArrayList<>();
 		ConnectDB.getInstance().connect();
 		Connection con = ConnectDB.getConnection();
 		ConnectDB.connect();
 		try {
-			String sql = "";
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-	}
-	
-	
-	public void deleteCustomer(int id) throws SQLException {
-		ConnectDB.getInstance().connect();
-		Connection con = ConnectDB.getConnection();
-		try {
-			String sql = "delete from PhieuThu\r\n"
-					+ "where MaHopDong = ?\r\n"
-					+ "\r\n"
-					+ "delete from PhieuNhanXetBaoHanh\r\n"
-					+ "where MaHopDong = ?\r\n"
-					+ "\r\n"
-					+ "delete from ChiTietHopDong\r\n"
-					+ "where MaHopDong = ?\r\n"
-					+ "\r\n"
-					+ "delete from HopDong\r\n"
-					+ "where MaHopDong = ?\r\n"
-					+ "delete from KhachHang where MaKhachHang = ?";
-					
-					
+			String sql = "select *from KhachHang \r\n"
+					+ "where MaKhachHang like ?\r\n"
+					+ "or TenKhachHang like ?\r\n"
+					+ "or DiaChi like ?\r\n"
+					+ "or SoDienThoai like ?";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, id);
-			ps.setInt(2, id);
-			ps.setInt(3, id);
-			ps.setInt(4, id);
-			ps.setInt(5, id);
-			if(ps.executeUpdate()==1) {
-				JOptionPane.showMessageDialog(null, "XÓA THÀNH CÔNG");
+			ps.setString(1,"%"+ dataSearch + "%");
+			ps.setString(2,"%"+ dataSearch + "%");
+			ps.setString(3,"%"+ dataSearch + "%");
+			ps.setString(4,"%"+ dataSearch + "%");
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				temp.add(new Customer(rs.getString("MaKhachHang"), 
+										rs.getString("TenKhachHang"), 
+										rs.getString("DiaChi"), 
+										rs.getString("SoDienThoai")));
 			}
+			
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "XÓA THẤT BẠI");
+			JOptionPane.showMessageDialog(null,"Không tìm thấy");
 			e.printStackTrace();
-		}finally {
-			ConnectDB.disconnect();
 		}
+		return temp;
 	}
 }

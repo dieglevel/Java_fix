@@ -5,10 +5,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import javax.naming.spi.DirStateFactory.Result;
+import javax.swing.JOptionPane;
 
 import connectDB.ConnectDB;
 import entity.AdministrationEmp;
@@ -132,5 +134,127 @@ public class Employee_DAO {
 		}finally {
 			stmt.close();
 		}
+	}
+	
+	public void updateEmp(int iD, String newName) throws SQLException {
+		ConnectDB.getInstance().connect();
+		Connection con = ConnectDB.getConnection();
+		ConnectDB.connect();
+			String sql = "UPDATE NhanVien\r\n"
+					+ "set TenNhanVien = ?\r\n"
+					+ "FROM NhanVien\r\n"
+					+ "WHERE MaNhanVien = ?";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1, newName);
+			ps.setInt(2, iD);
+			ps.executeUpdate();
+	}
+	
+	public void updateAdEmp(int iD, String newDepartment, String newLevel) throws SQLException {
+		ConnectDB.getInstance().connect();
+		Connection con = ConnectDB.getConnection();
+		ConnectDB.connect();
+		try {
+			String sql = "UPDATE NhanVienHanhChinh\r\n"
+					+ "set PhongBan = ?, TrinhDoHocVan = ?\r\n"
+					+ "FROM NhanVienHanhChinh\r\n"
+					+ "WHERE MaNhanVien = ?";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1, newDepartment);
+			ps.setString(2, newLevel);
+			ps.setInt(3, iD);
+			if(ps.executeUpdate()>0)
+				JOptionPane.showMessageDialog(null, "CẬP NHẬT THÀNH CÔNG");
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "CẬP NHẬT THẤT BẠI");
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateTechEmp(int iD, String newRank, String newYear) throws SQLException {
+		ConnectDB.getInstance().connect();
+		Connection con = ConnectDB.getConnection();
+		ConnectDB.connect();
+		try {
+			String sql = "UPDATE NhanVienKiThuat\r\n"
+					+ "set BacTho = ?, SoNamKinhNghiem = ?\r\n"
+					+ "FROM NhanVienKiThuat\r\n"
+					+ "WHERE MaNhanVien = ?";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1, newRank);
+			ps.setString(2, newYear);
+			ps.setInt(3, iD);
+			if(ps.executeUpdate()>0)
+				JOptionPane.showMessageDialog(null, "CẬP NHẬT THÀNH CÔNG");
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "CẬP NHẬT THẤT BẠI");
+			e.printStackTrace();
+		}
+	}
+	
+	public ArrayList<AdministrationEmp> searchAdEmp(String dataSearch) throws SQLException {
+		ArrayList<AdministrationEmp> temp = new ArrayList<>();
+		ConnectDB.getInstance().connect();
+		Connection con = ConnectDB.getConnection();
+		ConnectDB.connect();
+		try {
+			String sql = "select nv.MaNhanVien, TenNhanVien, ChucVu, PhongBan, TrinhDoHocVan \r\n"
+					+ "from NhanVien nv join NhanVienHanhChinh nvhc on nv.MaNhanVien = nvhc.MaNhanVien\r\n"
+					+ "where nvhc.MaNhanVien like ? or\r\n"
+					+ "TenNhanVien like ? or\r\n"
+					+ "ChucVu like ? or\r\n"
+					+ "PhongBan like ? or\r\n"
+					+ "TrinhDoHocVan like ?";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1,"%"+ dataSearch + "%");
+			ps.setString(2,"%"+ dataSearch + "%");
+			ps.setString(3,"%"+ dataSearch + "%");
+			ps.setString(4,"%"+ dataSearch + "%");
+			ps.setString(5,"%"+ dataSearch + "%");
+			
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				temp.add(new AdministrationEmp(rs.getString("MaNhanVien"), rs.getString("TenNhanVien"), rs.getString("ChucVu"),
+						rs.getString("PhongBan"), rs.getString("TrinhDoHocVan")));
+			}
+			
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null,"Không tìm thấy");
+			e.printStackTrace();
+		}
+		return temp;
+	}
+	
+	public ArrayList<TechnicalEmp> searchTechEmp(String dataSearch) throws SQLException {
+		ArrayList<TechnicalEmp> temp = new ArrayList<>();
+		ConnectDB.getInstance().connect();
+		Connection con = ConnectDB.getConnection();
+		ConnectDB.connect();
+		try {
+			String sql = "select nv.MaNhanVien, TenNhanVien, ChucVu, BacTho, SoNamKinhNghiem \r\n"
+					+ "from NhanVien nv join NhanVienKiThuat nvkt on nv.MaNhanVien = nvkt.MaNhanVien\r\n"
+					+ "where nvhc.MaNhanVien like ? or\r\n"
+					+ "TenNhanVien like ? or\r\n"
+					+ "ChucVu like ? or\r\n"
+					+ "BacTho like ? or\r\n"
+					+ "SoNamKinhNghiem like ?";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1,"%"+ dataSearch + "%");
+			ps.setString(2,"%"+ dataSearch + "%");
+			ps.setString(3,"%"+ dataSearch + "%");
+			ps.setString(4,"%"+ dataSearch + "%");
+			ps.setString(5,"%"+ dataSearch + "%");
+			
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				temp.add(new TechnicalEmp(rs.getString("MaNhanVien"), rs.getString("TenNhanVien"), rs.getString("ChucVu"),
+						rs.getString("BacTho"), Integer.parseInt(rs.getString("TrinhDoHocVan"))));
+			}
+			
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null,"Không tìm thấy");
+			e.printStackTrace();
+		}
+		return temp;
 	}
 }

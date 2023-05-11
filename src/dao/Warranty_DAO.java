@@ -102,6 +102,44 @@ public class Warranty_DAO {
 			e.printStackTrace();
 		}
 	}
-        
+    
+	public ArrayList<Warranty> searchWarranty(String dataSearch) throws SQLException {
+		ArrayList<Warranty> temp = new ArrayList<>();
+		ConnectDB.getInstance().connect();
+		Connection con = ConnectDB.getConnection();
+		ConnectDB.connect();
+		try {
+			String sql = "select *from PhieuNhanXetBaoHanh\r\n"
+					+ "where MaPhieu like ? or\r\n"
+					+ "MaHopDong like ? or\r\n"
+					+ "MaNhanVien like ? or\r\n"
+					+ "MaXe like ? or\r\n"
+					+ "NgayBaoHanh like ? or\r\n"
+					+ "TenLinhKien like ? or\r\n"
+					+ "Loi like ? or\r\n"
+					+ "GiaTien like ?";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1,"%"+ dataSearch + "%");
+			ps.setString(2,"%"+ dataSearch + "%");
+			ps.setString(3,"%"+ dataSearch + "%");
+			ps.setString(4,"%"+ dataSearch + "%");
+			ps.setString(5,"%"+ dataSearch + "%");
+			ps.setString(6,"%"+ dataSearch + "%");
+			ps.setString(7,"%"+ dataSearch + "%");
+			ps.setString(8,"%"+ dataSearch + "%");
+			
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				temp.add(new Warranty(rs.getString("MaPhieu"), rs.getString("MaHopDong"), rs.getString("MaNhanVien"), rs.getString("MaXe"), 
+						LocalDate.parse(rs.getString("NgayBaoHanh").trim(), DateTimeFormatter.ofPattern("dd-MM-yyyy")), 
+						rs.getString("TenLinhKien"), rs.getString("Loi"), Integer.parseInt(rs.getString("GiaTien").trim())));
+			}
+			
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null,"Không tìm thấy");
+			e.printStackTrace();
+		}
+		return temp;
+	}
 }
      
