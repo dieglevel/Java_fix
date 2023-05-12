@@ -694,8 +694,8 @@ public class ContractAdd extends javax.swing.JFrame {
     }
     
     public void addDetailContrac(){
-        dao.ContractDetail_DAO contractDetailDao = new ContractDetail_DAO();
-        entity.ContractDetail temp = new ContractDetail(contractDetailDao.getLastID(), ABORT, WIDTH, SOMEBITS, ICONIFIED)
+//        dao.ContractDetail_DAO contractDetailDao = new ContractDetail_DAO();
+//        entity.ContractDetail temp = new ContractDetail(contractDetailDao.getLastID(), ABORT, WIDTH, SOMEBITS, ICONIFIED)
     }
     
 
