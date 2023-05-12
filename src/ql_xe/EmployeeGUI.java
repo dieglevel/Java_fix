@@ -600,14 +600,8 @@ public class EmployeeGUI extends javax.swing.JPanel implements MouseListener{
     public void loadData() throws SQLException {
     	Employee_DAO dao1 = new Employee_DAO();
     	data = dao1.getAllAdEmployee();
-    	for (AdministrationEmp ae : data) {
-			System.out.println(ae.toString());
-		}
     	Employee_DAO dao2 = new Employee_DAO();
     	data2 = dao2.getAllTechEmployee();
-    	for (TechnicalEmp te : data2) {
-			System.out.println(te.toString());
-		}
     	loadTable();
     }
     

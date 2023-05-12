@@ -325,9 +325,6 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
     public void loadData() throws SQLException {
     	Customer_DAO dao = new Customer_DAO();
     	data = dao.getAllCustomer();
-    	for (Customer c : data) {
-			System.out.println(c.toString());
-		}
     	loadTable();
     }
     

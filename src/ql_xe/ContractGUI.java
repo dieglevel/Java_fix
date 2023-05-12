@@ -45,7 +45,7 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
      */
     public ContractGUI() throws SQLException {
         initComponents();   
-        loadData();
+        updateData();
         disableTextField();
         contractAdd.buttonAdd.addActionListener(new ActionListener(){
             @Override
@@ -53,9 +53,10 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
                 if (e.getSource().equals(contractAdd.buttonAdd)){
                     if (contractAdd.buttonAdd.getText().equalsIgnoreCase("ĐỒNG Ý")){
                         try {
-                            contractAdd.addData();
-                            contractAdd.dispose();
-                            updateData();
+                            if (contractAdd.addData()){
+                                contractAdd.dispose();
+                                updateData();
+                            }
                         } catch (SQLException ex) {
                             Logger.getLogger(ContractGUI.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -406,7 +407,7 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
 
         table.setModel(model);
 
-        Main.add(scrollTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 310, 1560, 450));
+        Main.add(scrollTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 310, 1560, 410));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -427,10 +428,7 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
     }//GEN-LAST:event_buttonPayActionPerformed
 
     private void buttonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddActionPerformed
-        // TODO add your handling code here:
-		if (evt.getSource().equals(buttonAdd)){
-                    contractAdd.setVisible(true);
-                }
+
     }//GEN-LAST:event_buttonAddActionPerformed
 
     private void buttonDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDetailActionPerformed
@@ -439,7 +437,10 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
 
     private void buttonDetailContract(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonDetailContract
         // TODO add your handling code here:
-        contractAdd.setVisible(true);
+        if (evt.getSource().equals(buttonDetail)){
+            contractAdd.setVisible(true);
+            contractAdd.disableAdd();
+        }
         
     }//GEN-LAST:event_buttonDetailContract
 
@@ -447,6 +448,13 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
         // TODO add your handling code here:
         if (evt.getSource().equals(buttonAdd)){
                     contractAdd.setVisible(true);
+                    contractAdd.enableAdd();
+                    contractAdd.buttonAdd.setVisible(true);
+            try {
+                contractAdd.loadFirstTimeAdd();
+            } catch (SQLException ex) {
+                Logger.getLogger(ContractGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
                 }
     }//GEN-LAST:event_addContract
 
@@ -631,6 +639,7 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
     				String.format("%.3f",tmp.getMoneypaied() ),
     				Integer.toString(tmp.getTimePay())};
     		model.addRow(tmpRow);
+                    System.out.println(tmp.toString());
 		}
 	}
         

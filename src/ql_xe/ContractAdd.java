@@ -4,10 +4,12 @@
  */
 package ql_xe;
 
+import dao.ContractDetail_DAO;
 import dao.Contract_DAO;
 import dao.Customer_DAO;
 import dao.Motobike_DAO;
 import entity.Contract;
+import entity.ContractDetail;
 import entity.Customer;
 import entity.Motobike;
 import java.awt.Color;
@@ -461,11 +463,6 @@ public class ContractAdd extends javax.swing.JFrame {
 
     private void buttonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddActionPerformed
         // TODO add your handling code here:
-       if (evt.getSource().equals(buttonAdd)){
-           if (buttonAdd.getText().equalsIgnoreCase("ĐỒNG Ý")){
-                
-           }
-       }
         
     }//GEN-LAST:event_buttonAddActionPerformed
 
@@ -592,6 +589,7 @@ public class ContractAdd extends javax.swing.JFrame {
     
     
     public void loadFirstTimeAdd() throws SQLException{
+        model.setRowCount(0);
         txtContractID.setText(String.valueOf(contractDao.getLastID()));
         txtEmployeeID.setText(String.valueOf(GUI.employeeID));
         txtDayContract.setText(String.valueOf( LocalDate.now().format(DateTimeFormatter.ofPattern("d-M-yyyy"))));
@@ -613,7 +611,11 @@ public class ContractAdd extends javax.swing.JFrame {
         
     }
     
-    public void addData(){
+    public boolean addData(){
+        if (txtCustomerID.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn khách hàng");
+            return false;
+        }
                         String voucherFloat = String.valueOf(txtVoucher.getText().trim().replace("%", ""));
                         entity.Contract temp = new Contract(Integer.valueOf(txtContractID.getText()), 
                         Integer.valueOf(txtCustomerID.getText()), 
@@ -626,10 +628,14 @@ public class ContractAdd extends javax.swing.JFrame {
                         String.valueOf(comboMethod.getSelectedItem()));
                 try {
                     contractDao.addContract(temp);
+                    
+                    
 
                 } catch (SQLException ex) {
                     Logger.getLogger(ContractAdd.class.getName()).log(Level.SEVERE, null, ex);
+                    return false;
                 }
+                return true;
     }
     
     
@@ -677,7 +683,20 @@ public class ContractAdd extends javax.swing.JFrame {
         txtVoucher.setBackground(Color.white);
     }
     
+    public void disableAdd(){
+        buttonAdd.setVisible(false);
+        buttonCancel.setVisible(true);
+    }
     
+    public void enableAdd(){
+        buttonAdd.setVisible(true);
+        buttonCancel.setVisible(true);
+    }
+    
+    public void addDetailContrac(){
+        dao.ContractDetail_DAO contractDetailDao = new ContractDetail_DAO();
+        entity.ContractDetail temp = new ContractDetail(contractDetailDao.getLastID(), ABORT, WIDTH, SOMEBITS, ICONIFIED)
+    }
     
 
     
