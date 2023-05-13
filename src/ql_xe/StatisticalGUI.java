@@ -11,6 +11,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.RoundRectangle2D;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -27,16 +29,20 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import dao.Motobike_DAO;
+import dao.Statistical_DAO;
 import dao.Warranty_DAO;
 import entity.Customer;
 import entity.Motobike;
+import entity.Statistical_Motobike;
+import entity.Statistical_contract;
+import entity.Statistical_employee;
 import entity.Warranty;
 
 /**
  *
  * @author Admin
  */
-public class StatisticalGUI extends javax.swing.JPanel {
+public class StatisticalGUI extends javax.swing.JPanel implements ActionListener {
 
     /**
      * Creates new form ..
@@ -96,11 +102,11 @@ public class StatisticalGUI extends javax.swing.JPanel {
         labelOption2.setBackground(new java.awt.Color(255, 255, 255));
         labelOption2.setFont(new java.awt.Font("Leelawadee UI", 1, 18)); // NOI18N
         labelOption2.setForeground(new java.awt.Color(0, 0, 0));
-        labelOption2.setText("Chức Vụ:");
+        labelOption2.setText("Theo:");
         panelOption2.add(labelOption2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 150, 30));
 
         txtOption2.setFont(new java.awt.Font("Bahnschrift", 1, 18));
-        txtOption2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nhân Viên Hành Chính", "Nhân Viên Kĩ Thuật"}));
+        txtOption2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {}));
         panelOption2.add(txtOption2, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 0, 270, 30));
 
         Header.add(panelOption2, new org.netbeans.lib.awtextra.AbsoluteConstraints(880, 30, 480, 40));
@@ -111,11 +117,11 @@ public class StatisticalGUI extends javax.swing.JPanel {
         labelOption1.setBackground(new java.awt.Color(255, 255, 255));
         labelOption1.setFont(new java.awt.Font("Leelawadee UI", 1, 18)); // NOI18N
         labelOption1.setForeground(new java.awt.Color(0, 0, 0));
-        labelOption1.setText("Chức Vụ:");
+        labelOption1.setText("Thống kê:");
         panelOption1.add(labelOption1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 150, 30));
 
         txtOption1.setFont(new java.awt.Font("Bahnschrift", 1, 18));
-        txtOption1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nhân Viên Hành Chính", "Nhân Viên Kĩ Thuật"}));
+        txtOption1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"Doanh thu", "Nhân viên lập hợp đồng", "Số xe bán được"}));
         panelOption1.add(txtOption1, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 0, 270, 30));
 
         Header.add(panelOption1, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 30, 480, 40));
@@ -178,7 +184,16 @@ public class StatisticalGUI extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(Main, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
+        
+        //Sự kiện combo 1 và 2
+        txtOption1.addActionListener(this);
+        txtOption2.addActionListener(this);
+        
+        
+        
     }// </editor-fold>//GEN-END:initComponents
+    
+    
 
     
   //METHOD !IMPORTANT
@@ -283,5 +298,125 @@ public class StatisticalGUI extends javax.swing.JPanel {
         }
 
     }
-    
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if (e.getSource().equals(txtOption1)) {
+			if (txtOption1.getSelectedItem().toString().equals("Doanh thu")) {
+				txtOption2.removeAllItems();
+				txtOption2.addItem("Tháng");
+				txtOption2.addItem("Năm");
+			}
+			
+			else if (txtOption1.getSelectedItem().toString().equals("Nhân viên lập hợp đồng")) {
+				txtOption2.removeAllItems();
+				txtOption2.addItem("Tháng ");
+				txtOption2.addItem("Năm ");
+			}
+			
+			else if (txtOption1.getSelectedItem().toString().equals("Số xe bán được")) {
+				txtOption2.removeAllItems();
+				txtOption2.addItem("Tháng  ");
+				txtOption2.addItem("Năm  ");
+			}
+		}
+		
+		else if (e.getSource().equals(txtOption2)) {
+			if (txtOption2.getSelectedItem().toString().equals("Tháng")) {
+				DefaultTableModel modeltemp = new DefaultTableModel(new String[] {"Mã hợp đồng", "Ngày lập hợp đồng", "Doanh thu(đ)"}, 0);
+				table.setModel(modeltemp);
+				dao.Statistical_DAO dao = new Statistical_DAO();
+				try {
+					ArrayList<Statistical_contract> temp = dao.doanhThuTheoThang();
+					for (Statistical_contract statistical_contract : temp) {
+						int month = LocalDate.now().getMonthValue();
+						int tempYear = LocalDate.now().getYear(); 
+						if (month == statistical_contract.getNgayHopDong().getMonthValue() && tempYear == statistical_contract.getNgayHopDong().getYear())
+							modeltemp.addRow(new String[] {String.valueOf(statistical_contract.getMaHopDong()), String.valueOf(statistical_contract.getNgayHopDong()), String.format("%.03f", statistical_contract.getDoanhThu())});
+					}
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			
+			else if (txtOption2.getSelectedItem().toString().equals("Năm")) {
+				DefaultTableModel modeltemp = new DefaultTableModel(new String[] {"Mã hợp đồng", "Ngày lập hợp đồng", "Doanh thu(đ)"}, 0);
+				table.setModel(modeltemp);
+				dao.Statistical_DAO dao = new Statistical_DAO();
+				try {
+					ArrayList<Statistical_contract> temp = dao.doanhThuTheoThang();
+					for (Statistical_contract statistical_contract : temp) {
+						int tempYear = LocalDate.now().getYear(); 
+						if (tempYear == statistical_contract.getNgayHopDong().getYear())
+							modeltemp.addRow(new String[] {String.valueOf(statistical_contract.getMaHopDong()), String.valueOf(statistical_contract.getNgayHopDong()), String.format("%.03f", statistical_contract.getDoanhThu())});
+					}
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			
+			else if (txtOption2.getSelectedItem().toString().equals("Tháng ")) {
+				DefaultTableModel modeltemp = new DefaultTableModel(new String[] {"Mã Nhân viên", "Tên nhân viên", "Tháng lập hợp đồng", "Số lượng hợp đồng"}, 0);
+				table.setModel(modeltemp);
+				dao.Statistical_DAO dao = new Statistical_DAO();
+				try {
+					ArrayList<Statistical_employee> temp = dao.nhanVienLapHopDongTheoThang();
+					for (Statistical_employee statistical_employee : temp) {
+						modeltemp.addRow(new String[] {String.valueOf(statistical_employee.getMaNhanVien()), String.valueOf(statistical_employee.getTenNhanVien()), String.valueOf(statistical_employee.getNgayHopDong()), String.valueOf(statistical_employee.getSoLuongHopDong())});			
+					}
+				} catch (Exception e2) {
+					// TODO: handle exception
+					e2.printStackTrace();
+				}
+			}
+			
+			else if (txtOption2.getSelectedItem().toString().equals("Năm ")) {
+				DefaultTableModel modeltemp = new DefaultTableModel(new String[] {"Mã Nhân viên", "Tên nhân viên",  "Năm lập hợp đồng", "Số lượng hợp đồng"}, 0);
+				table.setModel(modeltemp);
+				dao.Statistical_DAO dao = new Statistical_DAO();
+				try {
+					ArrayList<Statistical_employee> temp = dao.nhanVienLapHopDongTheoNam();
+					for (Statistical_employee statistical_employee : temp) {
+						modeltemp.addRow(new String[] {String.valueOf(statistical_employee.getMaNhanVien()), String.valueOf(statistical_employee.getTenNhanVien()), String.valueOf(statistical_employee.getNgayHopDong()), String.valueOf(statistical_employee.getSoLuongHopDong())});			
+					}
+				} catch (Exception e2) {
+					// TODO: handle exception
+					e2.printStackTrace();
+				}
+			}
+			
+			else if (txtOption2.getSelectedItem().toString().equals("Tháng  ")) {
+				DefaultTableModel modeltemp = new DefaultTableModel(new String[] {"Mã xe", "Tháng", "Số lượng"}, 0);
+				table.setModel(modeltemp);
+				dao.Statistical_DAO dao = new Statistical_DAO();
+				try {
+					ArrayList<Statistical_Motobike> temp = dao.soXeBanDuocTheoThang();
+					for (Statistical_Motobike statistical_Motobike : temp) {
+							modeltemp.addRow(new String[] {String.valueOf(statistical_Motobike.getMaXe()), String.valueOf(statistical_Motobike.getThoiGian()), String.valueOf(statistical_Motobike.getSoLuong())});
+					}
+				} catch (Exception e3) {
+					// TODO: handle exception
+					e3.printStackTrace();
+				}
+			}
+			
+			else if (txtOption2.getSelectedItem().toString().equals("Năm  ")) {
+				DefaultTableModel modeltemp = new DefaultTableModel(new String[] {"Mã xe", "Năm", "Số lượng"}, 0);
+				table.setModel(modeltemp);
+				dao.Statistical_DAO dao = new Statistical_DAO();
+				try {
+					ArrayList<Statistical_Motobike> temp = dao.soXeBanDuocTheoNam();
+					for (Statistical_Motobike statistical_Motobike : temp) {
+							modeltemp.addRow(new String[] {String.valueOf(statistical_Motobike.getMaXe()), String.valueOf(statistical_Motobike.getThoiGian()), String.valueOf(statistical_Motobike.getSoLuong())});
+					}
+				} catch (Exception e3) {
+					// TODO: handle exception
+					e3.printStackTrace();
+				}
+			}		
+		}
+	}
 }
