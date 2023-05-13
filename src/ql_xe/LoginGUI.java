@@ -4,9 +4,15 @@
  */
 package ql_xe;
 
+import entity.Login;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -22,8 +28,8 @@ public class LoginGUI extends javax.swing.JFrame {
         Toolkit toolkit = getToolkit();
         Dimension size = toolkit.getScreenSize();
         setLocation(size.width/2-getWidth()/2, size.height/2-getHeight()/2);
-        jTextField1.setOpaque(false);
-        jPasswordField1.setOpaque(false);
+        txtAccount.setOpaque(false);
+        txtPassword.setOpaque(false);
     }
 
     /**
@@ -38,8 +44,8 @@ public class LoginGUI extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         buttonSearch = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jPasswordField1 = new javax.swing.JPasswordField();
+        txtAccount = new javax.swing.JTextField();
+        txtPassword = new javax.swing.JPasswordField();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
@@ -61,6 +67,9 @@ public class LoginGUI extends javax.swing.JFrame {
         buttonSearch.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         buttonSearch.setIconTextGap(15);
         buttonSearch.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                dangNhapButton(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 mouseEnteredLogIn(evt);
             }
@@ -78,21 +87,21 @@ public class LoginGUI extends javax.swing.JFrame {
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/952cb62a0d94bf5332811289a2b33be7_vectorized_vectorized_vectorized.png"))); // NOI18N
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 120, 180, 180));
 
-        jTextField1.setBackground(new Color(0,0,0,0));
-        jTextField1.setFont(new java.awt.Font("Calibri Light", 0, 18)); // NOI18N
-        jTextField1.setForeground(new java.awt.Color(0, 0, 0));
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.LEFT);
-        jTextField1.setBorder(null);
-        jTextField1.setOpaque(false);
-        jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 460, 280, 30));
+        txtAccount.setBackground(new Color(0,0,0,0));
+        txtAccount.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        txtAccount.setForeground(new java.awt.Color(0, 0, 0));
+        txtAccount.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        txtAccount.setBorder(null);
+        txtAccount.setOpaque(false);
+        jPanel1.add(txtAccount, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 460, 280, 30));
 
-        jPasswordField1.setBackground(new Color(0,0,0,0));
-        jPasswordField1.setFont(new java.awt.Font("Corbel Light", 0, 14)); // NOI18N
-        jPasswordField1.setForeground(Color.BLACK
+        txtPassword.setBackground(new Color(0,0,0,0));
+        txtPassword.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        txtPassword.setForeground(Color.BLACK
         );
-        jPasswordField1.setBorder(null);
-        jPasswordField1.setOpaque(false);
-        jPanel1.add(jPasswordField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 540, 280, 30));
+        txtPassword.setBorder(null);
+        txtPassword.setOpaque(false);
+        jPanel1.add(txtPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 540, 280, 30));
 
         jLabel3.setFont(new java.awt.Font("Candara", 1, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
@@ -156,6 +165,31 @@ public class LoginGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_mouseExitedLogIn
 
+    private void dangNhapButton(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dangNhapButton
+        try {
+            // TODO add your handling code here:
+
+            ArrayList<entity.Login> temp = dao.Login_DAO.getInstance().getAllLogin();
+            String account = txtAccount.getText();
+            String password = txtPassword.getText();
+
+            for (Login login : temp) {
+                if (login.getTenNhanVien().trim().equalsIgnoreCase(account)){
+                    if (login.getMatKhau().trim().equalsIgnoreCase(password)){
+                        this.setVisible(false);
+                        GUI gui = new GUI();
+                        gui.setVisible(true);
+                        gui.employeeID = login.getMaNhanVien();
+                        return;
+                    }
+                }
+            }
+            JOptionPane.showMessageDialog(null, "Tài Khoản Không Hợp Lệ");
+        } catch (SQLException ex) {
+            Logger.getLogger(LoginGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_dangNhapButton
+
     /**
      * @param args the command line arguments
      */
@@ -167,7 +201,7 @@ public class LoginGUI extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -201,7 +235,7 @@ public class LoginGUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField txtAccount;
+    private javax.swing.JPasswordField txtPassword;
     // End of variables declaration//GEN-END:variables
 }

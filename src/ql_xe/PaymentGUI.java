@@ -671,6 +671,33 @@ public class PaymentGUI extends javax.swing.JPanel implements ActionListener,Mou
 		// TODO Auto-generated method stub
 		
 	}
+        
+        
+        public void contractToPayment (String word){
+            try {
+				list = payment_Dao.search(word);
+		    	if(list.isEmpty()) {
+		    		JOptionPane.showMessageDialog(null, "KHÔNG TÌM THẤY");
+		    	}
+		    	else {
+		    		model.setRowCount(0);
+		    		for(Payment tmp:list) {
+			    		String[] newRow = {
+			    			Integer.toString(tmp.getPaymentID()),
+			    			Integer.toString(tmp.getContractID()),
+			    			tmp.getPaymentDate().format(DateTimeFormatter.ofPattern("d-M-yyyy")),
+			    			String.format("%.3f", tmp.getMoneyPay()),
+			    			tmp.getPersionTake(),
+			    			tmp.getPersionGive()  			
+			    		};
+			    		model.addRow(newRow);
+			    	}
+		    	}
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        }
     
 	
 }

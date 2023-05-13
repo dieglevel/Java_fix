@@ -558,7 +558,7 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
     private javax.swing.JPanel panelMoneyToBePaid;
     private javax.swing.JPanel panelNumberOfInstallments;
     private javax.swing.JScrollPane scrollTable;
-    private rojeru_san.complementos.RSTableMetro table;
+    public rojeru_san.complementos.RSTableMetro table;
     private javax.swing.JLabel title;
     private javax.swing.JTextField txtContractID;
     private javax.swing.JTextField txtCustomerID;
