@@ -421,6 +421,7 @@ public class ContractAdd extends javax.swing.JFrame {
         buttonAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonAddActionPerformed(evt);
+                buttonUpdate(evt);
             }
         });
         head.add(buttonAdd, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 770, 170, 50));
@@ -474,7 +475,6 @@ public class ContractAdd extends javax.swing.JFrame {
     private void changeFunction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeFunction
         // TODO add your handling code here:
         if (evt.getSource().equals(comboMethod)){
-            System.out.println("ql_xe.ContractAdd.changeFunction()");
             if (comboMethod.getSelectedIndex() == 1){
                 txtNumberOfInstallments.setEnabled(true);
                 txtNumberOfInstallments.setBackground(Color.white);
@@ -506,13 +506,18 @@ public class ContractAdd extends javax.swing.JFrame {
                 voucher +=2;
             }
             txtVoucher.setText(String.valueOf(voucher+"%"));
-            txtMoneyToPay.setText(String.format("%.3f", Double.valueOf(totalMoney * ((voucher*1.0)/100))));
+            txtMoneyToPay.setText(String.format("%.3f", Double.valueOf(totalMoney - ((Double.valueOf(totalMoney)*((voucher*1.0)/100))))));
         }
     }//GEN-LAST:event_tableChange
 
     private void txtVoucherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtVoucherActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtVoucherActionPerformed
+
+    private void buttonUpdate(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonUpdate
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_buttonUpdate
 
     
     
@@ -589,6 +594,11 @@ public class ContractAdd extends javax.swing.JFrame {
     
     
     public void loadFirstTimeAdd() throws SQLException{
+        disableTextField();
+        buttonAdd.setText("OK");
+        comboMethod.setEnabled(true);
+        txtNumberOfInstallments.setEnabled(true);
+        txtNumberOfInstallments.setBackground(Color.white);
         model.setRowCount(0);
         txtContractID.setText(String.valueOf(contractDao.getLastID()));
         txtEmployeeID.setText(String.valueOf(GUI.employeeID));
@@ -628,7 +638,7 @@ public class ContractAdd extends javax.swing.JFrame {
                         String.valueOf(comboMethod.getSelectedItem()));
                 try {
                     contractDao.addContract(temp);
-                    
+                    addDetailContract();
                     
 
                 } catch (SQLException ex) {
@@ -637,6 +647,8 @@ public class ContractAdd extends javax.swing.JFrame {
                 }
                 return true;
     }
+    
+    
     
     
     public void disableTextField (){
@@ -648,6 +660,7 @@ public class ContractAdd extends javax.swing.JFrame {
         txtNumberOfInstallments.setEnabled(false);
         txtTotal.setEnabled(false);
         txtVoucher.setEnabled(false);
+        comboMethod.setEnabled(false);
         
         
         
@@ -659,6 +672,7 @@ public class ContractAdd extends javax.swing.JFrame {
         txtNumberOfInstallments.setBackground(Color.getHSBColor(0f, 0f,0.79f));
         txtTotal.setBackground(Color.getHSBColor(0f, 0f,0.79f));
         txtVoucher.setBackground(Color.getHSBColor(0f, 0f,0.79f));
+        comboMethod.setBackground(Color.getHSBColor(0f, 0f,0.79f));
     }
     
     public void enableTextField (){
@@ -670,6 +684,7 @@ public class ContractAdd extends javax.swing.JFrame {
         txtNumberOfInstallments.setEnabled(true);
         txtTotal.setEnabled(true);
         txtVoucher.setEnabled(true);
+        comboMethod.setEnabled(true);
         
         
         
@@ -681,6 +696,7 @@ public class ContractAdd extends javax.swing.JFrame {
         txtNumberOfInstallments.setBackground(Color.white);
         txtTotal.setBackground(Color.white);
         txtVoucher.setBackground(Color.white);
+        comboMethod.setBackground(Color.white);
     }
     
     public void disableAdd(){
@@ -693,12 +709,175 @@ public class ContractAdd extends javax.swing.JFrame {
         buttonCancel.setVisible(true);
     }
     
-    public void addDetailContrac(){
-//        dao.ContractDetail_DAO contractDetailDao = new ContractDetail_DAO();
-//        entity.ContractDetail temp = new ContractDetail(contractDetailDao.getLastID(), ABORT, WIDTH, SOMEBITS, ICONIFIED)
+    public void addDetailContract() throws SQLException{
+        dao.ContractDetail_DAO contractDetailDao = new ContractDetail_DAO();
+        int tempMotoID = 0;
+        int tempNum = 0;
+        double tempMoney = 0;
+        
+        for (int i  = 0 ; i < table.getRowCount() ; i++){
+            tempMotoID = Integer.valueOf(table.getValueAt(i, 0).toString());
+            tempNum = Integer.valueOf(table.getValueAt(i, 1).toString());
+            tempMoney = Double.valueOf(table.getValueAt(i, 2).toString());
+           if (tempNum > 0 ){
+                entity.ContractDetail temp = new ContractDetail(contractDetailDao.getLastID(),
+                Integer.valueOf(txtContractID.getText()), tempMotoID, tempNum, tempMoney);
+            
+            contractDetailDao.addContract(temp);
+           }
+        }
+        
     }
     
+    
+     public void chiTietHopDong(int maHopDong) throws SQLException{
+         
+         comboMethod.setEnabled(false);
+            entity.Contract temp = contractDao.getContract(maHopDong);
+            txtContractID.setText(String.valueOf(temp.getContractID()));
+            txtCustomerID.setText(String.valueOf(temp.getCustomerID()));
+            txtDayContract.setText(String.valueOf(temp.getContractDate().format(DateTimeFormatter.ofPattern("d-M-yyyy"))));
+            txtEmployeeID.setText(String.valueOf(temp.getStaffID()));
+            txtMoneyToPay.setText(String.valueOf(temp.getMoneyPay()));
+            comboMethod.setSelectedIndex(temp.getMethodPayment().equals("Trả Hết")?0:1);
+            txtTotal.setText(String.valueOf(temp.getMoneypaied()));
+            txtNumberOfInstallments.setText(String.valueOf( temp.getTimePay()));
+            txtVoucher.setText("");
+            disableTextField();
+            model.setRowCount(0);
+            dao.Motobike_DAO dao = new Motobike_DAO();
+            ArrayList<entity.Motobike> temp1 = dao.getAllMotobike();
+            for (Motobike motobike : temp1) {
+                model.addRow(new String[] {String.valueOf(motobike.getMotobikeID()),"0", String.format("%.0f", motobike.getMoney())});
+            }
+            ContractDetail_DAO a = new ContractDetail_DAO();
+            
+            ArrayList<ContractDetail> detailTemp = a.getSomeContractDetail(Integer.valueOf(txtContractID.getText()));
+            for (int i = 0 ; i < detailTemp.size(); i++){
+                for (int j = 0; j < model.getRowCount(); j++){              
+                    if (model.getValueAt(j, 0).toString().equals(String.valueOf(detailTemp.get(i).getMaXe()))){
+                        model.setValueAt(String.valueOf(detailTemp.get(i).getSoLuong()), j, 1);
+                        model.setValueAt(String.format("%.0f",detailTemp.get(i).getTongTien()), j, 2);
+                    }
+                }
+            }
+            
+        }
+     
+     public void suaHopDong(int ma) throws SQLException{
+         chiTietHopDong(ma);
+         enableTextField();
+         txtContractID.setEnabled(false);
+         txtContractID.setBackground(Color.getHSBColor(0f, 0f,0.79f));
+         buttonAdd.setText("SỬA");
+         
+     }
 
     
+    public boolean checkValid (){
+        if (txtCustomerID.getText().trim().equals("")||
+                txtDayContract.getText().trim().equals("") ||
+                txtEmployeeID.getText().trim().equals("") ||
+                txtMoneyToPay.getText().trim().equals("") ||
+                txtNumberOfInstallments.getText().trim().equals("") ||
+                txtTotal.getText().trim().equals("") ||
+                txtVoucher.getText().trim().equals("")
+                ){
+            JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin");
+            return false;
+        }
+        
+        try {
+            int temp = Integer.valueOf(txtCustomerID.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Mã Khách Hàng không hợp lệ");
+            return false;
+        }
+        
+        try {
+            int temp = Integer.valueOf(txtEmployeeID.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Mã Nhân Viên không hợp lệ");
+            return false;
+        }
+        
+        try {
+            LocalDate temp = LocalDate.parse(txtDayContract.getText(), DateTimeFormatter.ofPattern("d-M-yyyy"));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Ngày Hợp Đồng không hợp lệ");
+            return false;
+        }
+        
+        try {
+            int temp = Integer.valueOf(txtNumberOfInstallments.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Số lần trả góp không hợp lệ");
+            return false;
+        }
+        
+        if (Integer.valueOf(txtNumberOfInstallments.getText())>0&& Integer.valueOf(txtNumberOfInstallments.getText()) < 4){
+            
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Số lần trả góp không hợp lệ");
+            return false;
+        }
+        
+        return true;
+        
+    } 
     
+    public boolean updateContract(){
+            if (checkValid()){
+                        String voucherFloat = String.valueOf(txtVoucher.getText().trim().replace("%", ""));
+                            entity.Contract temp = new Contract(Integer.valueOf(txtContractID.getText()), 
+                            Integer.valueOf(txtCustomerID.getText()), 
+                            LocalDate.parse(txtDayContract.getText(), DateTimeFormatter.ofPattern("d-M-yyyy")),
+                            Integer.valueOf(txtEmployeeID.getText()),
+                            Double.valueOf(txtMoneyToPay.getText()),
+                            Float.valueOf(voucherFloat),
+                            Double.valueOf("0"),
+                            Integer.valueOf(txtNumberOfInstallments.getText()),
+                            String.valueOf(comboMethod.getSelectedItem()));
+
+                        try {
+                            contractDao.updateContract(temp);
+                            ContractDetail_DAO daoContractDetail = new ContractDetail_DAO();
+                            for (int i = 0 ; i < model.getRowCount(); i++){
+                                    
+                                    System.out.println(String.valueOf(txtContractID.getText()));
+                                    System.out.println(String.valueOf(Integer.valueOf(table.getValueAt(i, 0).toString())));
+                                    System.out.println(Integer.valueOf(table.getValueAt(i, 1).toString()));
+                                    
+                                    if (!daoContractDetail.updateContractDetail(Integer.valueOf(txtContractID.getText()), 
+                                            Integer.valueOf(table.getValueAt(i, 0).toString()), 
+                                            Integer.valueOf(table.getValueAt(i, 1).toString()))){
+                                        
+                                                int tempID = daoContractDetail.getLastID();
+                                                int tempMotoID = 0;
+                                                int tempNum = 0;
+                                                double tempMoney = 0;
+                                                       tempMotoID = Integer.valueOf(table.getValueAt(i, 0).toString());
+                                                        tempNum = Integer.valueOf(table.getValueAt(i, 1).toString());
+                                                        tempMoney = Double.valueOf(table.getValueAt(i, 2).toString());
+                                                       if (tempNum > 0 ){
+                                                            entity.ContractDetail tempContractDetailAdd = new ContractDetail(tempID,
+                                                            Integer.valueOf(txtContractID.getText()), tempMotoID, tempNum, tempMoney);
+                                                            System.out.println(tempContractDetailAdd);
+                                                        daoContractDetail.addContract(tempContractDetailAdd);
+                                                        }
+                                    }
+                                        
+                                }
+                            
+                            
+                            
+                            return true;
+                        } catch (SQLException ex) {
+                            Logger.getLogger(ContractAdd.class.getName()).log(Level.SEVERE, null, ex);
+                            return false;
+                        }
+        }
+            return false;
+    }
 }

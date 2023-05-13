@@ -43,18 +43,19 @@ public class ContractDetail_DAO {
                 
         }
     
-    public ArrayList<entity.ContractDetail> getAllContractDetail() throws SQLException{
+    public ArrayList<entity.ContractDetail> getSomeContractDetail(int id) throws SQLException{
 		ArrayList<entity.ContractDetail> list = new ArrayList<entity.ContractDetail>();
 		ConnectDB.getInstance().connect();
 		Connection con = ConnectDB.getConnection();
 		ConnectDB.connect();
 		try {
-			String sql = "SELECT * FROM ChiTietHopDong";
-			java.sql.Statement stm = con.createStatement();
-			ResultSet rs = stm.executeQuery(sql);
+			String sql = "SELECT * FROM ChiTietHopDong WHERE MaHopDong = ?";
+			java.sql.PreparedStatement stm = con.prepareStatement(sql);
+                        stm.setInt(1, id);
+			ResultSet rs = stm.executeQuery();
 			while (rs.next()) {
 				list.add(new entity.ContractDetail(
-                                        rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getInt(5))
+                                        rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getDouble(5))
 					);
 			}
 		}catch(Exception e) {
@@ -95,4 +96,33 @@ public class ContractDetail_DAO {
 		}
 		
 	}
+    
+    public boolean updateContractDetail(int maHD, int maXe, int soLuong) throws SQLException {
+		ConnectDB.getInstance().connect();
+		Connection con = ConnectDB.getConnection();
+		ConnectDB.connect();
+		try {
+			String sql = "UPDATE [dbo].[ChiTietHopDong]\n" +
+                                    "   SET [SoLuong] = ?\n" +
+                                    " WHERE MaHopDong = ? and MaXe = ?";
+                        
+			PreparedStatement ps = con.prepareStatement(sql);
+                        ps.setInt(1, soLuong);
+                        ps.setInt(2, maHD);
+                        ps.setInt(3, maXe);
+			if(ps.executeUpdate() == 1) {
+                            System.out.println("Có dữ liệu");
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			ConnectDB.disconnect();
+		}
+                System.out.println("Không có dữ liệu");
+		return false;
+	}
+    
+    
 }

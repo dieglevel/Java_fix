@@ -63,7 +63,7 @@ public class Contract_DAO {
 			ps.setInt(1,contract.getContractID());
 			ps.setInt(2,contract.getCustomerID());
 			ps.setInt(3,contract.getStaffID());
-			String date = contract.getContractDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")).toString();
+			String date = contract.getContractDate().format(DateTimeFormatter.ofPattern("d-M-yyyy")).toString();
 			ps.setString(4,date);
 			System.out.println(date);
 			ps.setString(5, Double.toString(contract.getMoneyPay()));
@@ -169,5 +169,47 @@ public class Contract_DAO {
                 return temp;
 	}
                 
-         
+        
+                
+                public void updateContract(Contract contract) throws SQLException {
+		ConnectDB.getInstance().connect();
+		Connection con = ConnectDB.getConnection();
+		ConnectDB.connect();
+		try {
+			String sql = "UPDATE [dbo].[HopDong]\n" +
+                                    "   SET [MaHopDong] = ?\n" +
+                                    "      ,[NgayHopDong] = ?\n" +
+                                    "      ,[MaKhachHang] = ?\n" +
+                                    "      ,[MaNhanVienLapHopDong] = ?\n" +
+                                    "      ,[TienPhaiThanhToan] = ?\n" +
+                                    "      ,[TiLeGiamGia] = ?\n" +
+                                    "      ,[TienDaThanhToan] = ?\n" +
+                                    "      ,[SoLanTraGop] = ?\n" +
+                                    "      ,[PhuongThucThanhToan] = ?\n" +
+                                    " WHERE MaHopDong = ?";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1,contract.getContractID());
+			ps.setInt(3,contract.getCustomerID());
+			ps.setInt(4,contract.getStaffID());
+			String date = contract.getContractDate().format(DateTimeFormatter.ofPattern("d-M-yyyy")).toString();
+			ps.setString(2,date);
+			System.out.println(date);
+			ps.setString(5, Double.toString(contract.getMoneyPay()));
+			ps.setString(6, Float.toString(contract.getDiscount()));
+			ps.setString(7, Double.toString(contract.getMoneypaied()));
+			ps.setString(9,contract.getMethodPayment());
+			ps.setInt(8, contract.getTimePay());
+                        ps.setInt(10, contract.getContractID());
+			if(ps.executeUpdate() == 1) {
+				JOptionPane.showMessageDialog(null, "Cập Nhập Thành Công");
+			}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Cập Nhập Thất Bại");
+			e.printStackTrace();
+		}
+		finally {
+			ConnectDB.disconnect();
+		}
+		
+	}
 }

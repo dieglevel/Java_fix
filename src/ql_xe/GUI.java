@@ -857,6 +857,7 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
 		     Panel_ButtonMenu.setVisible(true);
 		        setVisible(false);
 		        setVisible(true);
+                        
 		     
 		 }
 	}
