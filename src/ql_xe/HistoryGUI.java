@@ -118,7 +118,7 @@ public class HistoryGUI extends javax.swing.JPanel {
         table.setSurrendersFocusOnKeystroke(true);
         table.getTableHeader().setReorderingAllowed(false);
         scrollTable.setViewportView(table);
-        model = new DefaultTableModel(new String[] {"Mã Lịch Sử", "Nhân Viên", "Công Việc", "Cũ", "Mới", "Thời Gian"},0){
+        model = new DefaultTableModel(new String[] {"Mã Lịch Sử", "Nhân Viên", "Câu Lệnh", "Thời Gian"},0){
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
