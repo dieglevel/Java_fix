@@ -56,11 +56,13 @@ public class Payment_DAO {
 			ps.setString(3, pay.getPaymentDate().format(DateTimeFormatter.ofPattern("d-M-yyyy")));
 			ps.setString(4, pay.getMoneyPay().toString());
 			ps.setString(5,pay.getPersionTake());
-			ps.setString(6,pay.getPersionTake());
+			ps.setString(6,pay.getPersionGive());
 			if(ps.executeUpdate()==1) {
+				
 				JOptionPane.showMessageDialog(null, "THÊM THÀNH CÔNG");
 			}
 		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "KHÔNG TỒN TẠI KHÓA CHỈ VỚI CÁC KHÓA NGOẠI");
 			JOptionPane.showMessageDialog(null, "THÊM THẤT BẠI");
 			e.printStackTrace();
 		}
@@ -94,24 +96,66 @@ public class Payment_DAO {
 		
 	}
 	
-	public void deletePay(int id) throws SQLException {
+	public void update(Payment pay) throws SQLException {
 		ConnectDB.getInstance().connect();
 		Connection con = ConnectDB.getConnection();
 		try {
-			String sql = "\r\n"
-					+ "delete PhieuThu\r\n"
+			String sql = "update PhieuThu\r\n"
+					+ "set MaHopDong = ?,\r\n"
+					+ "	NgayTra = ?,\r\n"
+					+ "	SoTien = ?,\r\n"
+					+ "	NguoiNhan = ?,\r\n"
+					+ "	TenNguoiTra = ?\r\n"
 					+ "where MaThanhToan = ?";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, id);
+			ps.setInt(1,pay.getContractID());
+			ps.setString(2,pay.getPaymentDate().format(DateTimeFormatter.ofPattern("d-M-yyyy")).toString());
+			ps.setString(3, pay.getMoneyPay().toString());
+			ps.setString(4, pay.getPersionTake());
+			ps.setString(5,pay.getPersionGive());
+			ps.setInt(6,pay.getPaymentID());
 			if(ps.executeUpdate()==1) {
-				JOptionPane.showMessageDialog(null, "XÓA THÀNH CÔNG");
+				JOptionPane.showMessageDialog(null,"CẬP NHẬT THÀNH CÔNG");
 			}
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "XÓA THẤT BẠI");
+			JOptionPane.showMessageDialog(null,"CẬP NHẬT THẤT BẠI");
 			e.printStackTrace();
-		}finally {
-			ConnectDB.disconnect();
 		}
+	}
+	
+	public ArrayList<Payment> search(String word) throws SQLException{
+		ArrayList<Payment> list = new ArrayList<>();
+		ConnectDB.getInstance().connect();
+		Connection con = ConnectDB.getConnection();
+		try {
+			String sql ="select MaThanhToan,MaHopDong,NgayTra,SoTien,NguoiNhan,TenNguoiTra from PhieuThu\r\n"
+					+ "where MaThanhToan like ? or MaHopDong like ? or\r\n"
+					+ "	NgayTra like ? or SoTien like ? or\r\n"
+					+ "	NguoiNhan like ? or TenNguoiTra like ? ";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1, "%"+word+"%");
+			ps.setString(2, "%"+word+"%");
+			ps.setString(3, "%"+word+"%");
+			ps.setString(4, "%"+word+"%");
+			ps.setString(5, "%"+word+"%");
+			ps.setString(6, "%"+word+"%");	
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				list.add(new Payment(
+						rs.getInt(1),
+						rs.getInt(2),
+						LocalDate.parse(rs.getString(3).trim(),DateTimeFormatter.ofPattern("d-M-yyyy")),
+						Double.parseDouble(rs.getString(4)),
+						rs.getString(5),
+						rs.getString(6)
+					));
+			}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null,"TÌM THẤT BẠI");
+			e.printStackTrace();
+		}
+		return list;
+		
 	}
 	
 }
