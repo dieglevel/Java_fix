@@ -464,9 +464,9 @@ public class PaymentGUI extends javax.swing.JPanel implements ActionListener,Mou
     
     private Payment checkValue() {
     	//check contract id
-    	String regexContract = "^\\d{3,}$";
+    	String regexContract = "^\\d{1,}$";
     	if(!txtContractID.getText().matches(regexContract)) {
-    		JOptionPane.showMessageDialog(null, "MÃ HỢP ĐỒNG GỒM CHỮ SỐ VÀ ÍT NHẤT 3 SỐ");
+    		JOptionPane.showMessageDialog(null, "MÃ HỢP ĐỒNG GỒM CHỮ SỐ VÀ ÍT NHẤT 1 SỐ");
 			return null;
     	}
     	// check DATE

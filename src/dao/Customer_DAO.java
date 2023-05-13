@@ -49,8 +49,10 @@ public class Customer_DAO {
 			stmt.setString(2, cus.getTenKhachHang());
 			stmt.setString(3, cus.getDiaChi());
 			stmt.setString(4, cus.getSoDienThoai());
-			if(stmt.executeUpdate()==1)
+			if(stmt.executeUpdate()==1) {
+				dao.History_DAO.getInstance().historyInsert(ql_xe.GUI.employeeID, "Insert "+cus.toString());
 				JOptionPane.showMessageDialog(null, "Đã lưu vào Database");
+			}
 		}catch(SQLException e) {
 			JOptionPane.showMessageDialog(null, "Lưu thất bại");
 			e.printStackTrace();

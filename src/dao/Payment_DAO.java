@@ -58,7 +58,7 @@ public class Payment_DAO {
 			ps.setString(5,pay.getPersionTake());
 			ps.setString(6,pay.getPersionGive());
 			if(ps.executeUpdate()==1) {
-				
+				dao.History_DAO.getInstance().historyInsert(ql_xe.GUI.employeeID,"INSERT " + pay.toString());
 				JOptionPane.showMessageDialog(null, "THÊM THÀNH CÔNG");
 			}
 		} catch (Exception e) {
@@ -115,6 +115,7 @@ public class Payment_DAO {
 			ps.setString(5,pay.getPersionGive());
 			ps.setInt(6,pay.getPaymentID());
 			if(ps.executeUpdate()==1) {
+				dao.History_DAO.getInstance().historyInsert(ql_xe.GUI.employeeID,"UPDATE" + pay.toString());
 				JOptionPane.showMessageDialog(null,"CẬP NHẬT THÀNH CÔNG");
 			}
 		} catch (Exception e) {

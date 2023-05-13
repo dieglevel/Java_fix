@@ -389,6 +389,9 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
 
     private void buttonSearchActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_buttonSearchActionPerformed
        if(evt.getSource().equals(buttonSearch)) {
+    	   	buttonAdd.setVisible(false);
+    	   	buttonUpdate.setVisible(false);
+    	   	buttonDelete.setText("HỦY");
 			String text = JOptionPane.showInputDialog("Nhập dữ liệu cần tìm: ");
 			try {
 				data = cus_DAO.searchCustomer(text);
@@ -397,6 +400,12 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			}
+			if(evt.getSource().equals(buttonDelete.getText().equalsIgnoreCase("HỦY"))) {
+				buttonAdd.setVisible(true);
+	    	   	buttonUpdate.setVisible(true);
+	    	   	buttonDelete.setText("XÓA");
+	    	   	loadTable();
 			}
        }
     }//GEN-LAST:event_buttonSearchActionPerformed

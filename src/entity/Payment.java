@@ -56,6 +56,11 @@ public class Payment {
 	public void setPersionGive(String persionGive) {
 		this.persionGive = persionGive;
 	}
+	@Override
+	public String toString() {
+		return "Payment [paymentID=" + paymentID + ", contractID=" + contractID + ", paymentDate=" + paymentDate
+				+ ", moneyPay=" + moneyPay + ", persionTake=" + persionTake + ", persionGive=" + persionGive + "]";
+	}
 	
 	
 }

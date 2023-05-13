@@ -61,7 +61,7 @@ public class Motobike_DAO {
 			ps.setString(9, tmp.getWarrantyPeriod());
 			if(ps.executeUpdate() == 1) {
 				JOptionPane.showMessageDialog(null,"THÊM THÀNH CÔNG");
-                                dao.History_DAO.getInstance().historyInsert(ql_xe.GUI.employeeID, tmp.toString());
+                dao.History_DAO.getInstance().historyInsert(ql_xe.GUI.employeeID,"INSERT" + tmp.toString());
 			}
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null,"THÊM THẤT BẠI");
@@ -174,6 +174,10 @@ public class Motobike_DAO {
 			ps.setString(8,txt9);
 			ps.setString(9,txt1);
 			if(ps.executeUpdate()==1) {
+				String tmp = "Ma se: "+txt1+" NuocsanXuat: "+txt2+" LoaiXe: "+txt3+" SoPK: "+txt4+" "
+						+ "SoKhung: "+txt5+" SoSuon: "+txt6+" MauXe: "+txt7+" GiaXe: "+txt8+" ThoiGianBaoHanh: "+txt9;
+				
+				dao.History_DAO.getInstance().historyInsert(ql_xe.GUI.employeeID,"UPDATE " + tmp);
 				JOptionPane.showMessageDialog(null,"Cập nhật thành công");
 			}
 		} catch (Exception e) {

@@ -74,7 +74,9 @@ public class Warranty_DAO {
 			stmt.setString(6, w.getTenLinhKien());
 			stmt.setString(7, w.getLoiBaoHanh());
 			stmt.setDouble(8, w.getSoTien());
-			stmt.executeUpdate();
+			if(stmt.executeUpdate()==1) {
+				dao.History_DAO.getInstance().historyInsert(ql_xe.GUI.employeeID, "Insert "+w.toString());
+			}
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}finally {
