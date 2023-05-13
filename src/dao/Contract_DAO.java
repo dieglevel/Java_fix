@@ -72,6 +72,7 @@ public class Contract_DAO {
 			ps.setString(8,contract.getMethodPayment());
 			ps.setInt(9, contract.getTimePay());
 			if(ps.executeUpdate() == 1) {
+				dao.History_DAO.getInstance().historyInsert(ql_xe.GUI.employeeID,"INSERT " + contract.toString());
 				JOptionPane.showMessageDialog(null, "Lưu Thành Công");
 			}
 		} catch (Exception e) {
@@ -171,7 +172,7 @@ public class Contract_DAO {
                 
         
                 
-                public void updateContract(Contract contract) throws SQLException {
+        public void updateContract(Contract contract) throws SQLException {
 		ConnectDB.getInstance().connect();
 		Connection con = ConnectDB.getConnection();
 		ConnectDB.connect();
@@ -201,6 +202,7 @@ public class Contract_DAO {
 			ps.setInt(8, contract.getTimePay());
                         ps.setInt(10, contract.getContractID());
 			if(ps.executeUpdate() == 1) {
+				dao.History_DAO.getInstance().historyInsert(ql_xe.GUI.employeeID,"UPDATE " + contract.toString());
 				JOptionPane.showMessageDialog(null, "Cập Nhập Thành Công");
 			}
 		} catch (Exception e) {
