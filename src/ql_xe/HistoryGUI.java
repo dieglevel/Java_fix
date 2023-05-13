@@ -4,6 +4,7 @@
  */
 package ql_xe;
 
+import dao.History_DAO;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -29,6 +30,7 @@ import javax.swing.table.DefaultTableModel;
 import dao.Motobike_DAO;
 import dao.Warranty_DAO;
 import entity.Customer;
+import entity.History;
 import entity.Motobike;
 import entity.Warranty;
 
@@ -146,31 +148,7 @@ public class HistoryGUI extends javax.swing.JPanel {
 
     
   //METHOD !IMPORTANT
-    public void loadData() throws SQLException {
-    	Warranty_DAO dao = new Warranty_DAO();
-    	data = dao.getAllWarranty();
-    	for (Warranty w : data) {
-			System.out.println(w.toString());
-		}
-    	loadTable();
-    }
-    
-    public void loadTable() {
-    	model.setRowCount(0);
-    	table.clearSelection();
-    	for (Warranty w : data) {
-			model.addRow(new String[] {w.getMaBaoHanh(),
-										w.getMaHopDong(),
-										w.getMaXe(),
-										w.getMaNhanVien(),
-										String.valueOf(w.getNgayBaoHanh().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))),
-										w.getTenLinhKien(),
-										w.getLoiBaoHanh(),
-										String.valueOf(w.getSoTien())
-			});
 
-		}
-    }
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -240,6 +218,16 @@ public class HistoryGUI extends javax.swing.JPanel {
             return false;
         }
 
+    }
+    
+    public void loadData(){
+        model.setRowCount(0);
+        table.clearSelection();
+        dao.History_DAO dao = new History_DAO();
+        ArrayList<entity.History> temp = dao.getAllHistory();
+        for (History history : temp) {
+            model.addRow(new String[] {String.valueOf(history.getId()), String.valueOf(history.getMaNhanVien()),String.valueOf(history.getCommand()), String.valueOf(history.getDay())});
+        }
     }
     
 }

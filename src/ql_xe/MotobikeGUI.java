@@ -727,7 +727,8 @@ public class MotobikeGUI extends javax.swing.JPanel implements ActionListener,Mo
 				dao = new Motobike_DAO();
 				try {
 					if(checkValue() != null)	dao.addMoto(checkValue() );
-					else	 JOptionPane.showMessageDialog(null, "Object moto null");
+					else	 
+                                            
 					updateData();
 				} catch (SQLException e1) {
 					

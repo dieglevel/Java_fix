@@ -9,7 +9,6 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-
 import javax.swing.JOptionPane;
 
 import connectDB.ConnectDB;
@@ -60,8 +59,16 @@ public class Motobike_DAO {
 			ps.setString(7,  tmp.getColor());
 			ps.setDouble(8,  tmp.getMoney());
 			ps.setString(9, tmp.getWarrantyPeriod());
-			if(ps.executeUpdate()==1) {
+			if(ps.executeUpdate() == 1) {
 				JOptionPane.showMessageDialog(null,"THÊM THÀNH CÔNG");
+                                dao.History_DAO.getInstance().historyInsert(ql_xe.GUI.employeeID, String.format("insert into XeMay (%s, %s, %s, %s, %s, %s, %s, %s, %s)", 
+                                        String.valueOf(tmp.getMotobikeID()), String.valueOf(tmp.getCountryOfmanufacture()),
+                                                String.valueOf(tmp.getRangeOfVehicle()), String.valueOf(tmp.getCubic()), String.valueOf(tmp.getTheFrameOfTheMachine())
+                                                , String.valueOf(tmp.getNumberOfRibs())
+                                                        , String.valueOf(tmp.getColor()),
+                                                        String.valueOf(tmp.getMoney()),
+                                                        String.valueOf(tmp.getWarrantyPeriod())
+                                        ));
 			}
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null,"THÊM THẤT BẠI");

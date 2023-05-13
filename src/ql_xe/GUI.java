@@ -704,6 +704,7 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
         pMenuMain.remove(2);
         Panel_ButtonMenu.setVisible(true);
         pMenuMain.add(History, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 1580, 740));
+        History.loadData();
     }//GEN-LAST:event_Click_History
 
     private void Click_Status(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Click_Status
