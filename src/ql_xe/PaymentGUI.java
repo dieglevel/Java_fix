@@ -27,6 +27,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import dao.Payment_DAO;
+import entity.Motobike;
 import entity.Payment;
 
 /**
@@ -87,9 +88,8 @@ public class PaymentGUI extends javax.swing.JPanel implements ActionListener,Mou
         table.addMouseListener(this);
         buttonAdd1.addActionListener(this);
         buttonUpdate.addActionListener(this);
-        buttonUpdate.addActionListener(this);
         buttonDelete.addActionListener(this);
-        
+        buttonSearch.addActionListener(this);
         
         
         setPreferredSize(new java.awt.Dimension(1580, 770));
@@ -395,6 +395,17 @@ public class PaymentGUI extends javax.swing.JPanel implements ActionListener,Mou
     	}
     }
     
+
+    
+    private void setNullTextField() {
+    	txtCustomerID.setText("");
+    	txtlPayer.setText("");
+    	txtMoney.setText("");
+    	txtPayDay.setText("");
+    	txtContractID.setText("");    
+    	txtPaymentID.setText("");
+    }
+    
     private void disableTextField() {
     	txtCustomerID.setEnabled(false);
     	txtlPayer.setEnabled(false);
@@ -434,6 +445,62 @@ public class PaymentGUI extends javax.swing.JPanel implements ActionListener,Mou
     	model.setRowCount(0);
     	loadData();
     }
+    
+    public void btnCancel() {
+    	buttonAdd1.setText("THÊM");
+		buttonDelete.setText("XÓA");
+		buttonUpdate.setText("SỬA");
+		buttonUpdate.setVisible(true);
+		buttonSearch.setVisible(true);
+		buttonAdd1.setVisible(true);
+		try {
+			updateData();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		disableTextField();
+    }
+    
+    private Payment checkValue() {
+    	// check DATE
+    	try {
+			LocalDate.parse(txtPayDay.getText(),DateTimeFormatter.ofPattern("d-M-yyyy"));
+		} catch (Exception e2) {
+			JOptionPane.showMessageDialog(null, "NGÀY PHẢI THEO DẠNG d-M-yyyy");
+			return null;
+		}
+    	// check money
+    	try {
+			Double.parseDouble(txtMoney.getText());
+			if(Double.parseDouble(txtMoney.getText())<0) {
+				JOptionPane.showMessageDialog(null, "TIỀN LÀ SỐ KHÔNG ÂM ");
+				return null;
+			}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "TIỀN CHỈ NHẬP SỐ ");
+			return null;
+		}
+    	// check ID EMLOY
+    	String regex = "^\\d{6,}$";
+    	if(!txtCustomerID.getText().matches(regex)) {
+    		JOptionPane.showMessageDialog(null, "NHÂN VIÊN GỒM ÍT NHẤT 6 SỐ");
+			return null;
+    	}
+    	//REGEX person give
+    	String regexName = "^[A-Z][a-z]+(\\s[A-Z][a-z]+)+$";
+    	if(!txtlPayer.getText().matches(regexName)) {
+    		JOptionPane.showMessageDialog(null, "HỌ TÊN NGƯỜI TRẢ CẦN VIẾT HOA CHỮ ĐẦU VÀ GỒM ÍT NHẤT 2 TỪ");
+			return null;
+    	}
+    	
+    	
+    	Payment tmpPay = new Payment(Integer.parseInt(txtPaymentID.getText()),Integer.parseInt(txtContractID.getText()),
+				LocalDate.parse(txtPayDay.getText(),DateTimeFormatter.ofPattern("d-M-yyyy")),
+				Double.parseDouble(txtMoney.getText()),
+				txtCustomerID.getText(),txtlPayer.getText());
+    	return tmpPay;
+    }
 	
 
 	@Override
@@ -458,39 +525,93 @@ public class PaymentGUI extends javax.swing.JPanel implements ActionListener,Mou
 			}
 			else if(buttonAdd1.getText().equalsIgnoreCase("LƯU")) {
 				
-				Payment tmpPay = new Payment(Integer.parseInt(txtPaymentID.getText()),Integer.parseInt(txtContractID.getText()),
-						LocalDate.parse(txtPayDay.getText(),DateTimeFormatter.ofPattern("d-M-yyyy")),
-						Double.parseDouble(txtMoney.getText()),
-						txtlPayer.getText(),txtCustomerID.getText());
+				if(checkValue()!=null) {
+					Payment tmpPay = checkValue();
+					payment_Dao = new Payment_DAO();
+					try {
+						payment_Dao.addPayment(tmpPay);
+						updateData();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "THÊM THẤT BẠI");
+				}
 				
+				
+			}
+			
+		}
+		
+		if(o.equals(buttonSearch)) {
+			buttonAdd1.setVisible(false);
+			buttonDelete.setText("HỦY");
+			buttonUpdate.setVisible(false);
+			list = new ArrayList<>();
+			String word = JOptionPane.showInputDialog("TỪ CẦN TÌM");
+			try {
+				list = payment_Dao.search(word);
+		    	if(list == null) {
+		    		JOptionPane.showMessageDialog(null, "KHÔNG TÌM THẤY");
+		    	}
+		    	else {
+		    		model.setRowCount(0);
+		    		for(Payment tmp:list) {
+			    		String[] newRow = {
+			    			Integer.toString(tmp.getPaymentID()),
+			    			Integer.toString(tmp.getContractID()),
+			    			tmp.getPaymentDate().format(DateTimeFormatter.ofPattern("d-M-yyyy")),
+			    			String.format("%.3f", tmp.getMoneyPay()),
+			    			tmp.getPersionTake(),
+			    			tmp.getPersionGive()  			
+			    		};
+			    		model.addRow(newRow);
+			    	}
+		    	}
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+		}
+		
+		if(o.equals(buttonDelete)) {
+			if(buttonDelete.getText().equalsIgnoreCase("XÓA")) {
+				setNullTextField();
+			}
+			else if(buttonDelete.getText().equalsIgnoreCase("HỦY")) {
+				buttonAdd1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-add-50 (2) (2).png")));
+				btnCancel();
+				
+				
+				
+			}
+		}
+		if(o.equals(buttonUpdate)) { //update
+			if(buttonUpdate.getText().equals("SỬA")) {
+				buttonDelete.setText("HỦY");
+				buttonSearch.setVisible(false);
+				buttonAdd1.setVisible(false);
+				buttonUpdate.setText("OKE");
+				enableTextField();
+			}
+			else if(buttonUpdate.getText().equalsIgnoreCase("OKE")){
+				Payment tmpPay = new Payment(Integer.parseInt(txtPaymentID.getText()),Integer.parseInt(txtContractID.getText()),
+				LocalDate.parse(txtPayDay.getText(),DateTimeFormatter.ofPattern("d-M-yyyy")),
+				Double.parseDouble(txtMoney.getText()),
+				txtCustomerID.getText(),txtlPayer.getText());
 				payment_Dao = new Payment_DAO();
 				try {
-					payment_Dao.addPayment(tmpPay);
+					payment_Dao.update(tmpPay);
 					updateData();
+					btnCancel();
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-			}
-			
-		}
-		if(o.equals(buttonDelete)) {
-			if(buttonDelete.getText().equalsIgnoreCase("XÓA")) {
-				payment_Dao = new Payment_DAO();
-				try {
-					payment_Dao.deletePay(Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString()));
-					updateData();
-				} catch (NumberFormatException | SQLException e1) {
-					JOptionPane.showMessageDialog(Header,"XÓA THẤT BẠI");
-					e1.printStackTrace();
-				}
-			}
-			else if(buttonDelete.getText().equalsIgnoreCase("HỦY")) {
-				buttonAdd1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-add-50 (2) (2).png")));
-				buttonAdd1.setText("THÊM");
-				buttonDelete.setText("XÓA");
-				buttonUpdate.setVisible(true);
-				buttonSearch.setVisible(true);
+				buttonUpdate.setText("SỬA");
 				disableTextField();
 			}
 		}
