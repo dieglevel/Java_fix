@@ -201,7 +201,7 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
         buttonAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
-					buttonAddActionPerformed(evt);        
+					buttonAddActionPerformed(evt);     
 					txtCustomerID.setText(""+(++count));
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
@@ -215,7 +215,7 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
         buttonDelete.setFont(new java.awt.Font("MS Reference Sans Serif", 1, 11)); // NOI18N
         buttonDelete.setForeground(new java.awt.Color(0, 0, 0));
         buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-delete-20.png"))); // NOI18N
-        buttonDelete.setText("XÓA");
+        buttonDelete.setText("XÓA RỖNG");
         buttonDelete.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         buttonDelete.setIconTextGap(15);
         buttonDelete.addActionListener(new java.awt.event.ActionListener() {
@@ -325,9 +325,6 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
     public void loadData() throws SQLException {
     	Customer_DAO dao = new Customer_DAO();
     	data = dao.getAllCustomer();
-    	for (Customer c : data) {
-			System.out.println(c.toString());
-		}
     	loadTable();
     }
     
@@ -447,11 +444,15 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
                
 		        buttonAdd.setText("THÊM");
 				buttonAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-add-50 (2) (2).png")));
-				buttonDelete.setText("XÓA");
+				buttonDelete.setText("XÓA RỖNG");
 				buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-delete-20.png")));
 				buttonSearch.setVisible(true);
 		    	buttonUpdate.setVisible(true);
 		    	setEditFalse();
+            }
+            else {
+            	deleteField();
+            	table.clearSelection();
             }
         }
 	}//GEN-LAST:event_buttonDeleteActionPerformed

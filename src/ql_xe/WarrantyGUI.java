@@ -316,7 +316,7 @@ public class WarrantyGUI extends javax.swing.JPanel implements MouseListener{
         buttonDelete.setFont(new java.awt.Font("MS Reference Sans Serif", 1, 11)); // NOI18N
         buttonDelete.setForeground(new java.awt.Color(0, 0, 0));
         buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-delete-20.png"))); // NOI18N
-        buttonDelete.setText("XÓA");
+        buttonDelete.setText("XÓA RỖNG");
         buttonDelete.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         buttonDelete.setIconTextGap(15);
         buttonDelete.addActionListener(new java.awt.event.ActionListener() {
@@ -466,6 +466,17 @@ public class WarrantyGUI extends javax.swing.JPanel implements MouseListener{
     	txtErroName.setBackground(Color.getHSBColor(0f, 0f,0.79f));
     	txtMoney.setBackground(Color.getHSBColor(0f, 0f,0.79f));
 
+    }
+    
+    public void deleteTextField() {
+    	txtWarranty.setText("");
+    	txtContract.setText("");
+    	txtEmployee.setText("");
+    	txtMotobikeID.setText("");
+    	txtWarrantyDate.setText("");
+    	txtPartName.setText("");
+    	txtErroName.setText("");
+    	txtMoney.setText("");
     }
     
   //METHOD !IMPORTANT
@@ -634,7 +645,7 @@ public class WarrantyGUI extends javax.swing.JPanel implements MouseListener{
             if (buttonDelete.getText().equalsIgnoreCase("HỦY")){
                 buttonUpdate.setText("SỬA");
                 buttonUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-done-20.png")));
-                buttonDelete.setText("XÓA");
+                buttonDelete.setText("XÓA RỖNG");
                 buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/close_icon.png")));
                 buttonAdd.setVisible(true);
                 buttonSearch.setVisible(true);
@@ -653,11 +664,15 @@ public class WarrantyGUI extends javax.swing.JPanel implements MouseListener{
                
 		        buttonAdd.setText("THÊM");
 				buttonAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-add-50 (2) (2).png")));
-				buttonDelete.setText("XÓA");
+				buttonDelete.setText("XÓA RỖNG");
 				buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-delete-20.png")));
 				buttonSearch.setVisible(true);
 		    	buttonUpdate.setVisible(true);
 		    	disableTextField();
+            }
+            else {
+            	deleteTextField();
+            	table.clearSelection();
             }
         }
 	}//GEN-LAST:event_buttonDeleteActionPerformed

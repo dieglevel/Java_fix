@@ -45,7 +45,7 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
      */
     public ContractGUI() throws SQLException {
         initComponents();   
-        loadData();
+        updateData();
         disableTextField();
         contractAdd.buttonAdd.addActionListener(new ActionListener(){
             @Override
@@ -53,13 +53,26 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
                 if (e.getSource().equals(contractAdd.buttonAdd)){
                     if (contractAdd.buttonAdd.getText().equalsIgnoreCase("ĐỒNG Ý")){
                         try {
-                            contractAdd.addData();
-                            contractAdd.dispose();
-                            updateData();
+                            if (contractAdd.addData()){
+                                contractAdd.dispose();
+                                updateData();
+                            }
                         } catch (SQLException ex) {
                             Logger.getLogger(ContractGUI.class.getName()).log(Level.SEVERE, null, ex);
                         }
-            }
+                }
+                    else if (contractAdd.buttonAdd.getText().equalsIgnoreCase("SỬA")){
+                                           if (contractAdd.updateContract()){
+                                               try {
+                                                   contractAdd.dispose();
+                                                   updateData();
+                                               } catch (SQLException ex) {
+                                                   Logger.getLogger(ContractGUI.class.getName()).log(Level.SEVERE, null, ex);
+                                               }
+                                           }
+                    
+                
+            }   
         }
     }   
 });
@@ -311,6 +324,11 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
         buttonUpdate.setText("SỬA");
         buttonUpdate.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         buttonUpdate.setIconTextGap(15);
+        buttonUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clickUpdate(evt);
+            }
+        });
         Header.add(buttonUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(1390, 140, 140, 40));
 
         buttonSearch.setBackground(new java.awt.Color(255, 255, 255));
@@ -406,7 +424,7 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
 
         table.setModel(model);
 
-        Main.add(scrollTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 310, 1560, 450));
+        Main.add(scrollTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 310, 1560, 410));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -427,10 +445,7 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
     }//GEN-LAST:event_buttonPayActionPerformed
 
     private void buttonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddActionPerformed
-        // TODO add your handling code here:
-		if (evt.getSource().equals(buttonAdd)){
-                    contractAdd.setVisible(true);
-                }
+
     }//GEN-LAST:event_buttonAddActionPerformed
 
     private void buttonDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDetailActionPerformed
@@ -439,7 +454,22 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
 
     private void buttonDetailContract(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonDetailContract
         // TODO add your handling code here:
-        contractAdd.setVisible(true);
+        if (evt.getSource().equals(buttonDetail)){
+            if (table.getSelectedRow() != -1){
+               contractAdd.setVisible(true);
+                contractAdd.disableAdd();
+                try {
+                    contractAdd.chiTietHopDong(Integer.valueOf(table.getValueAt(table.getSelectedRow(), 0).toString()));
+                } catch (SQLException ex) {
+                    Logger.getLogger(ContractGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "Vui lòng chọn 1 dòng trong bảng");
+            }
+            
+            
+        }
         
     }//GEN-LAST:event_buttonDetailContract
 
@@ -447,6 +477,13 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
         // TODO add your handling code here:
         if (evt.getSource().equals(buttonAdd)){
                     contractAdd.setVisible(true);
+                    contractAdd.enableAdd();
+                    contractAdd.buttonAdd.setVisible(true);
+            try {
+                contractAdd.loadFirstTimeAdd();
+            } catch (SQLException ex) {
+                Logger.getLogger(ContractGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
                 }
     }//GEN-LAST:event_addContract
 
@@ -470,6 +507,26 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
         }
  
     }//GEN-LAST:event_clickTable
+
+    private void clickUpdate(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clickUpdate
+        // TODO add your handling code here:
+        if (evt.getSource().equals(buttonUpdate)){
+            if (table.getSelectedRow() != -1){
+               contractAdd.setVisible(true);
+                contractAdd.enableAdd();
+                try {
+                    contractAdd.suaHopDong(Integer.valueOf(table.getValueAt(table.getSelectedRow(), 0).toString()));
+                } catch (SQLException ex) {
+                    Logger.getLogger(ContractGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "Vui lòng chọn 1 dòng trong bảng");
+            }
+            
+            
+        }
+    }//GEN-LAST:event_clickUpdate
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -678,6 +735,17 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
 		// TODO Auto-generated method stub
 		
 	}
+        
+        public int getIDPaymen(){
+            int temp = Integer.valueOf(table.getValueAt(table.getSelectedRow(), 0).toString());
+            if(temp != -1){
+                return temp;
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "Vui lòng chọn 1 dòng trong bảng");
+            }
+            return -1;
+        }
 	
 
 }

@@ -245,7 +245,7 @@ public class EmployeeGUI extends javax.swing.JPanel implements MouseListener{
         buttonDelete.setFont(new java.awt.Font("MS Reference Sans Serif", 1, 11)); // NOI18N
         buttonDelete.setForeground(new java.awt.Color(0, 0, 0));
         buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-delete-20.png"))); // NOI18N
-        buttonDelete.setText("XÓA");
+        buttonDelete.setText("XÓA RỖNG");
         buttonDelete.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         buttonDelete.setIconTextGap(15);
         buttonDelete.addActionListener(new java.awt.event.ActionListener() {
@@ -459,7 +459,7 @@ public class EmployeeGUI extends javax.swing.JPanel implements MouseListener{
                 if (buttonDelete.getText().equalsIgnoreCase("HỦY")){
                     buttonUpdate.setText("SỬA");
                     buttonUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-done-20.png")));
-                    buttonDelete.setText("XÓA");
+                    buttonDelete.setText("XÓA RỖNG");
                     buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/close_icon.png")));
                     buttonAdd1.setVisible(true);
                     buttonSearch.setVisible(true);
@@ -471,13 +471,17 @@ public class EmployeeGUI extends javax.swing.JPanel implements MouseListener{
                     txtName.setBackground(Color.getHSBColor(0f, 0f,0.79f));
                     txtDepartment.setBackground(Color.getHSBColor(0f, 0f,0.79f));
                     txtAcademicLevel.setBackground(Color.getHSBColor(0f, 0f,0.79f));
-                    			buttonAdd1.setText("THÊM");
-			buttonAdd1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-add-50 (2) (2).png")));
-			buttonDelete.setText("XÓA");
-			buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-delete-20.png")));
-			buttonSearch.setVisible(true);
-	    	buttonUpdate.setVisible(true);
-	    	setEditFalse();
+        			buttonAdd1.setText("THÊM");
+					buttonAdd1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-add-50 (2) (2).png")));
+					buttonDelete.setText("XÓA RỖNG");
+					buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-delete-20.png")));
+					buttonSearch.setVisible(true);
+					buttonUpdate.setVisible(true);
+					setEditFalse();
+                }
+                else {
+                	deleteField();
+                	table.clearSelection();
                 }
             }
 
@@ -600,14 +604,8 @@ public class EmployeeGUI extends javax.swing.JPanel implements MouseListener{
     public void loadData() throws SQLException {
     	Employee_DAO dao1 = new Employee_DAO();
     	data = dao1.getAllAdEmployee();
-    	for (AdministrationEmp ae : data) {
-			System.out.println(ae.toString());
-		}
     	Employee_DAO dao2 = new Employee_DAO();
     	data2 = dao2.getAllTechEmployee();
-    	for (TechnicalEmp te : data2) {
-			System.out.println(te.toString());
-		}
     	loadTable();
     }
     

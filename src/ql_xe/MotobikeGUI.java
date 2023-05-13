@@ -747,6 +747,9 @@ public class MotobikeGUI extends javax.swing.JPanel implements ActionListener,Mo
 					e1.printStackTrace();
 				}
 			}
+			else if(buttonDelete.getText().equalsIgnoreCase("XÓA")) {
+				setNullTextField();
+			}
 		}
 		
 		if(o.equals(buttonSearch)) {
@@ -775,23 +778,27 @@ public class MotobikeGUI extends javax.swing.JPanel implements ActionListener,Mo
 				
 			}
 			else if(buttonUpdate.getText().equalsIgnoreCase("OKE")) {
+				if(checkValue()!=null) {
+					dao = new Motobike_DAO();
+					try {
+						dao.update(txtMotobikeID.getText(),txtCountryOfmanufacture.getText(),txtRangeOfVehicle.getText(),
+								txtCubic.getText(),txtTheFrameOfTheMachine.getText(),txtNumberOfRibs.getText(),txtColor.getText(),txtMoney.getText()
+								,comboWarrantyPeriod.getSelectedItem().toString());
+						updateData();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					try {
+						functionCancel();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}else {
+					JOptionPane.showMessageDialog(null,"CẬP NHẬT THẤT BẠI");
+				}
 				
-				dao = new Motobike_DAO();
-				try {
-					dao.update(txtMotobikeID.getText(),txtCountryOfmanufacture.getText(),txtRangeOfVehicle.getText(),
-							txtCubic.getText(),txtTheFrameOfTheMachine.getText(),txtNumberOfRibs.getText(),txtColor.getText(),txtMoney.getText()
-							,comboWarrantyPeriod.getSelectedItem().toString());
-					updateData();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				try {
-					functionCancel();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
 			}
 		}
 		
