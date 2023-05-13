@@ -463,6 +463,12 @@ public class PaymentGUI extends javax.swing.JPanel implements ActionListener,Mou
     }
     
     private Payment checkValue() {
+    	//check contract id
+    	String regexContract = "^\\d{3,}$";
+    	if(!txtContractID.getText().matches(regexContract)) {
+    		JOptionPane.showMessageDialog(null, "MÃ HỢP ĐỒNG GỒM CHỮ SỐ VÀ ÍT NHẤT 3 SỐ");
+			return null;
+    	}
     	// check DATE
     	try {
 			LocalDate.parse(txtPayDay.getText(),DateTimeFormatter.ofPattern("d-M-yyyy"));
@@ -532,11 +538,12 @@ public class PaymentGUI extends javax.swing.JPanel implements ActionListener,Mou
 						payment_Dao.addPayment(tmpPay);
 						updateData();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
+						
 						e1.printStackTrace();
 					}
 				}
 				else {
+					
 					JOptionPane.showMessageDialog(null, "THÊM THẤT BẠI");
 				}
 				
@@ -553,7 +560,7 @@ public class PaymentGUI extends javax.swing.JPanel implements ActionListener,Mou
 			String word = JOptionPane.showInputDialog("TỪ CẦN TÌM");
 			try {
 				list = payment_Dao.search(word);
-		    	if(list == null) {
+		    	if(list.isEmpty()) {
 		    		JOptionPane.showMessageDialog(null, "KHÔNG TÌM THẤY");
 		    	}
 		    	else {
@@ -591,28 +598,35 @@ public class PaymentGUI extends javax.swing.JPanel implements ActionListener,Mou
 		}
 		if(o.equals(buttonUpdate)) { //update
 			if(buttonUpdate.getText().equals("SỬA")) {
-				buttonDelete.setText("HỦY");
-				buttonSearch.setVisible(false);
-				buttonAdd1.setVisible(false);
-				buttonUpdate.setText("OKE");
-				enableTextField();
+				if(table.getSelectedRow()==-1) {
+					JOptionPane.showMessageDialog(null, "CHỌN DÒNG CẦN SỬA");
+				}
+				else {
+					buttonDelete.setText("HỦY");
+					buttonSearch.setVisible(false);
+					buttonAdd1.setVisible(false);
+					buttonUpdate.setText("OKE");
+					enableTextField();
+				}
 			}
 			else if(buttonUpdate.getText().equalsIgnoreCase("OKE")){
-				Payment tmpPay = new Payment(Integer.parseInt(txtPaymentID.getText()),Integer.parseInt(txtContractID.getText()),
-				LocalDate.parse(txtPayDay.getText(),DateTimeFormatter.ofPattern("d-M-yyyy")),
-				Double.parseDouble(txtMoney.getText()),
-				txtCustomerID.getText(),txtlPayer.getText());
-				payment_Dao = new Payment_DAO();
-				try {
-					payment_Dao.update(tmpPay);
-					updateData();
-					btnCancel();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				if(checkValue()!=null) {
+					Payment tmpPay = checkValue();
+					payment_Dao = new Payment_DAO();
+					try {
+						payment_Dao.update(tmpPay);
+						updateData();
+						btnCancel();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					buttonUpdate.setText("SỬA");
+					disableTextField();
+				}else {
+					JOptionPane.showMessageDialog(null,"CẬP NHẬT THẤT BẠI");
 				}
-				buttonUpdate.setText("SỬA");
-				disableTextField();
+				
 			}
 		}
 		

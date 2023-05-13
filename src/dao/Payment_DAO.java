@@ -58,9 +58,11 @@ public class Payment_DAO {
 			ps.setString(5,pay.getPersionTake());
 			ps.setString(6,pay.getPersionGive());
 			if(ps.executeUpdate()==1) {
+				
 				JOptionPane.showMessageDialog(null, "THÊM THÀNH CÔNG");
 			}
 		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "KHÔNG TỒN TẠI KHÓA CHỈ VỚI CÁC KHÓA NGOẠI");
 			JOptionPane.showMessageDialog(null, "THÊM THẤT BẠI");
 			e.printStackTrace();
 		}
@@ -123,7 +125,6 @@ public class Payment_DAO {
 	
 	public ArrayList<Payment> search(String word) throws SQLException{
 		ArrayList<Payment> list = new ArrayList<>();
-//		list = null;
 		ConnectDB.getInstance().connect();
 		Connection con = ConnectDB.getConnection();
 		try {
