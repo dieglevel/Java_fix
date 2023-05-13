@@ -36,7 +36,7 @@ public class History_DAO {
         while (rs.next()){
             return rs.getInt(1)+1;
         }
-        return -1;
+        return 1;
     }
     
     

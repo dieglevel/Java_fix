@@ -172,7 +172,6 @@ public class LoginGUI extends javax.swing.JFrame {
             ArrayList<entity.Login> temp = dao.Login_DAO.getInstance().getAllLogin();
             String account = txtAccount.getText();
             String password = txtPassword.getText();
-
             for (Login login : temp) {
                 if (login.getTenNhanVien().trim().equalsIgnoreCase(account)){
                     if (login.getMatKhau().trim().equalsIgnoreCase(password)){

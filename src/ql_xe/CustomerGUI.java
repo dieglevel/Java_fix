@@ -202,7 +202,6 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
 					buttonAddActionPerformed(evt);     
-					txtCustomerID.setText(""+(++count));
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -406,6 +405,7 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
 	    	   	buttonUpdate.setVisible(true);
 	    	   	buttonDelete.setText("XÓA");
 	    	   	loadTable();
+                        
 			}
        }
     }//GEN-LAST:event_buttonSearchActionPerformed
@@ -413,7 +413,9 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
     
     // Ẩn hiện các nút Update, Delete khi click nút Lưu + Thêm dữ liệu
     private void buttonAddActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_buttonAddActionPerformed
-    	Customer cus = new Customer(txtCustomerID.getText(), txtName.getText(), txtAddress.getText(), txtPhone.getText());
+    	txtCustomerID.setText(String.valueOf(cus_DAO.getID()));
+        
+        Customer cus = new Customer(txtCustomerID.getText(), txtName.getText(), txtAddress.getText(), txtPhone.getText());
         String [] row = {cus.getMaKhachHang(), cus.getTenKhachHang(), cus.getDiaChi(), cus.getSoDienThoai()};
         if(buttonAdd.getText().equalsIgnoreCase("Lưu")) {
 	        if(validData()) {
@@ -458,6 +460,7 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
 				buttonSearch.setVisible(true);
 		    	buttonUpdate.setVisible(true);
 		    	setEditFalse();
+                        disableTextField();
             }
             else {
             	deleteField();
@@ -520,7 +523,6 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
     private Customer_DAO cus_DAO = new Customer_DAO();
     private DefaultTableModel model;
     private ArrayList<Customer> data = new ArrayList<>();
-    private int count = cus_DAO.getID();
     
     
     

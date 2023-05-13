@@ -29,6 +29,8 @@ import javax.swing.table.DefaultTableModel;
 import dao.Payment_DAO;
 import entity.Motobike;
 import entity.Payment;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -518,12 +520,13 @@ public class PaymentGUI extends javax.swing.JPanel implements ActionListener,Mou
 				payment_Dao = new Payment_DAO();
 				int tmpID = 0;
 				try {
-					 tmpID = payment_Dao.maxID().getPaymentID();
+					 tmpID = payment_Dao.maxID();
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
 				txtPaymentID.setText(Integer.toString(tmpID+1));
 				enableTextField();
+                                
 				buttonAdd1.setText("LƯU");
 				buttonDelete.setText("HỦY");
 				buttonUpdate.setVisible(false);
@@ -587,6 +590,11 @@ public class PaymentGUI extends javax.swing.JPanel implements ActionListener,Mou
 		if(o.equals(buttonDelete)) {
 			if(buttonDelete.getText().equalsIgnoreCase("XÓA")) {
 				setNullTextField();
+                            try {
+                                loadData();
+                            } catch (SQLException ex) {
+                                Logger.getLogger(PaymentGUI.class.getName()).log(Level.SEVERE, null, ex);
+                            }
 			}
 			else if(buttonDelete.getText().equalsIgnoreCase("HỦY")) {
 				buttonAdd1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-add-50 (2) (2).png")));
@@ -675,7 +683,7 @@ public class PaymentGUI extends javax.swing.JPanel implements ActionListener,Mou
         
         public void contractToPayment (String word){
             try {
-				list = payment_Dao.search(word);
+				list = payment_Dao.search2(word);
 		    	if(list.isEmpty()) {
 		    		JOptionPane.showMessageDialog(null, "KHÔNG TÌM THẤY");
 		    	}

@@ -69,7 +69,7 @@ public class Payment_DAO {
 		ConnectDB.disconnect();
 	}
 	
-	public Payment maxID() throws SQLException {
+	public int maxID() throws SQLException {
 		ConnectDB.getInstance().connect();
 		Connection con = ConnectDB.getConnection();
 		Payment tmp = null;
@@ -79,20 +79,14 @@ public class Payment_DAO {
 			Statement stm = con.createStatement();
 			ResultSet rs = stm.executeQuery(sql);
 			while(rs.next()) {
-				tmp = new Payment(
-						rs.getInt(1),
-						rs.getInt(2),
-						LocalDate.parse(rs.getString(3).trim(),DateTimeFormatter.ofPattern("d-M-yyyy")),
-						Double.parseDouble(rs.getString(4)),
-						rs.getString(5),
-						rs.getString(6));
+				return rs.getInt(1);
 			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		ConnectDB.disconnect();
-		return tmp;
+		return 0;
 		
 	}
 	
@@ -140,6 +134,34 @@ public class Payment_DAO {
 			ps.setString(4, "%"+word+"%");
 			ps.setString(5, "%"+word+"%");
 			ps.setString(6, "%"+word+"%");	
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				list.add(new Payment(
+						rs.getInt(1),
+						rs.getInt(2),
+						LocalDate.parse(rs.getString(3).trim(),DateTimeFormatter.ofPattern("d-M-yyyy")),
+						Double.parseDouble(rs.getString(4)),
+						rs.getString(5),
+						rs.getString(6)
+					));
+			}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null,"TÌM THẤT BẠI");
+			e.printStackTrace();
+		}
+		return list;
+		
+	}
+        
+        public ArrayList<Payment> search2(String word) throws SQLException{
+		ArrayList<Payment> list = new ArrayList<>();
+		ConnectDB.getInstance().connect();
+		Connection con = ConnectDB.getConnection();
+		try {
+			String sql ="select MaThanhToan,MaHopDong,NgayTra,SoTien,NguoiNhan,TenNguoiTra from PhieuThu\r\n"
+					+ "where MaHopDong like ?";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1, "%"+word+"%");
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
 				list.add(new Payment(

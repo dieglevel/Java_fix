@@ -15,6 +15,7 @@ import java.awt.event.MouseMotionListener;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
@@ -705,6 +706,8 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
         Panel_ButtonMenu.setVisible(true);
         pMenuMain.add(History, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 1580, 740));
         History.loadData();
+        setVisible(false);
+        setVisible(true);
     }//GEN-LAST:event_Click_History
 
     private void Click_Status(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Click_Status
@@ -713,6 +716,8 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
         pMenuMain.remove(2);
         Panel_ButtonMenu.setVisible(true);
         pMenuMain.add(Status, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 1580, 740));
+        setVisible(false);
+        setVisible(true);
     }//GEN-LAST:event_Click_Status
 
     /**
@@ -819,16 +824,21 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
 		 if (e.getSource().equals(Contract.buttonPay)) {
                      if (Contract.table.getSelectedRow() != -1){
                          String a = String.valueOf(Contract.table.getValueAt(Contract.table.getSelectedRow(), 0));
-                     }
-                     
-                     
-                     
-			 pMenuMain.remove(2);
+                         			 pMenuMain.remove(2);
 			 
 		     pMenuMain.add(Payment,new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 1580, 740));
 		     Panel_ButtonMenu.setVisible(true);
 		        setVisible(false);
 		        setVisible(true);
+                        Payment.contractToPayment(a);
+                     }
+                     else{
+                         JOptionPane.showMessageDialog(null, "Vui lòng chọn 1 dòng trong bảng");
+                     }
+                     
+                     
+                     
+
                         
 		     
 		 }

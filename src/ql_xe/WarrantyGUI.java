@@ -545,7 +545,7 @@ public class WarrantyGUI extends javax.swing.JPanel implements MouseListener{
     	}
     	
     	try {
-    		LocalDate.parse(warDate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+    		LocalDate.parse(warDate, DateTimeFormatter.ofPattern("d-M-yyyy"));
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Ngày theo có dạng dd-MM-yyyy");
 			return false;
@@ -628,8 +628,8 @@ public class WarrantyGUI extends javax.swing.JPanel implements MouseListener{
     	
 	if(buttonAdd.getText().equalsIgnoreCase("Lưu")) {
 		if(validData()) {
-			Warranty w = new Warranty(txtWarranty.getText(), txtContract.getText(), txtEmployee.getText(), txtMotobikeID.getText(), 
-	    			LocalDate.parse(txtWarrantyDate.getText(), DateTimeFormatter.ofPattern("dd-MM-yyyy")), txtPartName.getText(),txtErroName.getText(), Double.parseDouble(txtMoney.getText()));
+			Warranty w = new Warranty(txtWarranty.getText(), txtContract.getText(), txtMotobikeID.getText(), txtEmployee.getText(), 
+	    			LocalDate.parse(txtWarrantyDate.getText(), DateTimeFormatter.ofPattern("d-M-yyyy")), txtPartName.getText(),txtErroName.getText(), Double.parseDouble(txtMoney.getText()));
 	    			
 			 war_DAO.addWarranty(w);
 			 updateData();
@@ -655,7 +655,7 @@ public class WarrantyGUI extends javax.swing.JPanel implements MouseListener{
 //    	Header.revalidate();
 //    	Header.repaint();
     }//GEN-LAST:event_buttonAddActionPerformed
-    private void buttonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteActionPerforme
+    private void buttonDeleteActionPerformed(java.awt.event.ActionEvent evt) {                                            
     	if (evt.getSource().equals(buttonDelete)) { 
             if (buttonDelete.getText().equalsIgnoreCase("HỦY")){
                 buttonUpdate.setText("SỬA");
@@ -690,7 +690,7 @@ public class WarrantyGUI extends javax.swing.JPanel implements MouseListener{
             	table.clearSelection();
             }
         }
-	}//GEN-LAST:event_buttonDeleteActionPerformed
+	}                                            
 
     private void buttonUpdateActionPerformed(java.awt.event.ActionEvent evt) throws NumberFormatException, SQLException {//GEN-FIRST:event_buttonUpdateActionPerformed
         if(evt.getSource().equals(buttonUpdate)) {

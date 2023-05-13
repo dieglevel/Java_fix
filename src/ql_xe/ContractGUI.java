@@ -51,7 +51,7 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource().equals(contractAdd.buttonAdd)){
-                    if (contractAdd.buttonAdd.getText().equalsIgnoreCase("ĐỒNG Ý")){
+                    if (contractAdd.buttonAdd.getText().equalsIgnoreCase("OK")){
                         try {
                             if (contractAdd.addData()){
                                 contractAdd.dispose();
@@ -315,6 +315,11 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
         buttonDelete.setText("XÓA");
         buttonDelete.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         buttonDelete.setIconTextGap(15);
+        buttonDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clickDelete(evt);
+            }
+        });
         Header.add(buttonDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(1390, 90, 140, 40));
 
         buttonUpdate.setBackground(new java.awt.Color(255, 255, 255));
@@ -527,6 +532,12 @@ public class ContractGUI extends javax.swing.JPanel implements ActionListener,Mo
             
         }
     }//GEN-LAST:event_clickUpdate
+
+    private void clickDelete(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clickDelete
+        // TODO add your handling code here:
+        setNullTextField();
+        table.clearSelection();
+    }//GEN-LAST:event_clickDelete
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

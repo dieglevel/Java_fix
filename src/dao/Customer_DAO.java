@@ -76,7 +76,7 @@ public class Customer_DAO {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		return ID;
+		return ID+1;
 	}
 	
 	public void updateCustomer(int iD, String newName, String newAddress, String newPhone) throws SQLException {
