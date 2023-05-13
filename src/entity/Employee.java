@@ -28,6 +28,10 @@ public class Employee {
 	public void setChucVu(String chucVu) {
 		this.chucVu = chucVu;
 	}
+	@Override
+	public String toString() {
+		return String.format("%s%s%s", getMaNhanVien(), getTenNhanVien(), getChucVu());
+	}
 	
 	
 }

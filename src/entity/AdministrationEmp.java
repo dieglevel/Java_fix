@@ -31,5 +31,11 @@ public class AdministrationEmp extends Employee{
 	public void setHocVan(String hocVan) {
 		this.hocVan = hocVan;
 	}
+
+	@Override
+	public String toString() {
+		return String.format("%s,%s,%s,%s,%s", getMaNhanVien(), getTenNhanVien(), getChucVu(), getPhongBan(), getHocVan());	
+	}
+	
 	
 }

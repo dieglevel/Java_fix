@@ -45,6 +45,12 @@ public class Customer {
 	public void setSoDienThoai(String soDienThoai) {
 		this.soDienThoai = soDienThoai;
 	}
+
+
+	@Override
+	public String toString() {
+		return String.format("%s,%s,%s,%s", getMaKhachHang(), getTenKhachHang(), getDiaChi(), getSoDienThoai());
+	}
 	
 	
 }

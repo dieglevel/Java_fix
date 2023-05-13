@@ -30,5 +30,11 @@ public class TechnicalEmp extends Employee{
 	public void setSoNamKinhNghiem(int soNamKinhNghiem) {
 		this.soNamKinhNghiem = soNamKinhNghiem;
 	}
+
+	@Override
+	public String toString() {
+		return String.format("%s,%s,%s,%s,%s", getMaNhanVien(), getTenNhanVien(), getChucVu(), getBacTho(), getSoNamKinhNghiem());	
+	}
+	
 	
 }

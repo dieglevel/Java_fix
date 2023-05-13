@@ -47,6 +47,11 @@ public class Statistical_employee {
 	public void setSoLuongHopDong(int soLuongHopDong) {
 		this.soLuongHopDong = soLuongHopDong;
 	}
+
+	@Override
+	public String toString() {
+		return String.format("%s,%s,%s,%s", getMaNhanVien(),getTenNhanVien(),getNgayHopDong(),getSoLuongHopDong());
+	}
 	
 	
 }
