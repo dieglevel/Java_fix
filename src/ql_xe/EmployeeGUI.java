@@ -535,6 +535,9 @@ public class EmployeeGUI extends javax.swing.JPanel implements MouseListener{
     
     private void buttonSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSearchActionPerformed
     	if(evt.getSource().equals(buttonSearch)) {
+    		buttonAdd1.setVisible(false);
+			buttonUpdate.setVisible(false);
+			buttonDelete.setText("HỦY");
     		if(jComboBox1.getSelectedItem().equals("Nhân Viên Hành Chính")) {
     			String text = JOptionPane.showInputDialog("Nhập dữ liệu cần tìm: ");
     			try {
@@ -580,7 +583,12 @@ public class EmployeeGUI extends javax.swing.JPanel implements MouseListener{
     				e.printStackTrace();
     			}
     		}
-			
+    		
+			if(evt.getSource().equals(buttonDelete.getText().equalsIgnoreCase("HỦY"))) {
+				buttonAdd1.setVisible(true);
+				buttonUpdate.setVisible(true);
+				buttonDelete.setText("XÓA RỖNG");
+			}
        }
     }//GEN-LAST:event_buttonSearchActionPerformed
     

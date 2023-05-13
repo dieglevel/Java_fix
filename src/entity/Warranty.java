@@ -72,6 +72,10 @@ public class Warranty {
 	public void setSoTien(double soTien) {
 		this.soTien = soTien;
 	}
+	@Override
+	public String toString() {
+		return String.format("%s,%s,%s,%s,%s,%s,%s,%s", getMaBaoHanh(), getMaHopDong(), getMaXe(), getMaNhanVien(), getNgayBaoHanh(), getTenLinhKien(), getLoiBaoHanh(), getSoTien());
+	}
 	
 	
 }

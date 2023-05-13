@@ -596,6 +596,9 @@ public class WarrantyGUI extends javax.swing.JPanel implements MouseListener{
 
     private void buttonSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSearchActionPerformed
     	if(evt.getSource().equals(buttonSearch)) {
+    		buttonAdd.setVisible(false);
+    	   	buttonUpdate.setVisible(false);
+    	   	buttonDelete.setText("HỦY");
 			String text = JOptionPane.showInputDialog("Nhập dữ liệu cần tìm: ");
 			try {
 				data = war_DAO.searchWarranty(text);
@@ -605,6 +608,18 @@ public class WarrantyGUI extends javax.swing.JPanel implements MouseListener{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			if(evt.getSource().equals(buttonDelete.getText().equalsIgnoreCase("HỦY"))) {
+			buttonAdd.setVisible(true);
+			buttonUpdate.setVisible(true);
+			buttonDelete.setText("XÓA");
+			try {
+				updateData();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	       }
        }
     }//GEN-LAST:event_buttonSearchActionPerformed
     

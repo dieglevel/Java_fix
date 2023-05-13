@@ -65,8 +65,7 @@ public class ContractDetail {
 
 	@Override
 	public String toString() {
-		return "ContractDetail [maChiTiet=" + maChiTiet + ", maHopDong=" + maHopDong + ", maXe=" + maXe + ", soLuong="
-				+ soLuong + ", tongTien=" + tongTien + "]";
+		return String.format("%s,%s,%s,%s,%s", getMaChiTiet(), getMaHopDong(), getMaXe(), getSoLuong(), getTongTien());
 	}
 
     

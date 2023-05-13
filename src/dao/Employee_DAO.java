@@ -110,7 +110,10 @@ public class Employee_DAO {
 			stmt.setString(1, ae.getMaNhanVien());
 			stmt.setString(2, ae.getPhongBan());
 			stmt.setString(3, ae.getHocVan());
-			stmt.executeUpdate();
+			if(stmt.executeUpdate()==1) {
+				dao.History_DAO.getInstance().historyInsert(ql_xe.GUI.employeeID, "Insert "+ ae.toString());
+			}
+			
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}finally {
@@ -128,7 +131,9 @@ public class Employee_DAO {
 			stmt.setString(1, te.getMaNhanVien());
 			stmt.setString(2, te.getBacTho());
 			stmt.setInt(3, te.getSoNamKinhNghiem());
-			stmt.executeUpdate();
+			if(stmt.executeUpdate()==1) {
+				dao.History_DAO.getInstance().historyInsert(ql_xe.GUI.employeeID, "Insert "+te.toString());
+			}
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}finally {
