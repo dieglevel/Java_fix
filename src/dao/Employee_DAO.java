@@ -79,7 +79,7 @@ public class Employee_DAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return ID;
+		return ID+1;
 	}
 	
 	public void addEmployee(Employee e) throws SQLException {

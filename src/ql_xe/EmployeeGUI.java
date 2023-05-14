@@ -37,8 +37,6 @@ import entity.Employee;
 import entity.Motobike;
 import entity.TechnicalEmp;
 import entity.Warranty;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -206,7 +204,7 @@ public class EmployeeGUI extends javax.swing.JPanel implements MouseListener{
         labelAcademicLevel.setFont(new java.awt.Font("Leelawadee UI", 1, 18)); // NOI18N
         labelAcademicLevel.setForeground(new java.awt.Color(0, 0, 0));
         labelAcademicLevel.setText("Trình Độ Học Vấn:");
-        panelAcademicLevel.add(labelAcademicLevel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 180, 30));
+        panelAcademicLevel.add(labelAcademicLevel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 200, 30));
 
         Header.add(panelAcademicLevel, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 120, 480, 40));
 
@@ -217,6 +215,16 @@ public class EmployeeGUI extends javax.swing.JPanel implements MouseListener{
         buttonUpdate.setText("SỬA");
         buttonUpdate.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         buttonUpdate.setIconTextGap(15);
+        buttonUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+					buttonUpdateActionPerformed(evt);
+				} catch (NumberFormatException | SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+        });
         Header.add(buttonUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(1390, 140, 140, 40));
 
         buttonSearch.setBackground(new java.awt.Color(255, 255, 255));
@@ -226,13 +234,18 @@ public class EmployeeGUI extends javax.swing.JPanel implements MouseListener{
         buttonSearch.setText("TÌM");
         buttonSearch.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         buttonSearch.setIconTextGap(15);
+        buttonSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonSearchActionPerformed(evt);
+            }
+        });
         Header.add(buttonSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(1390, 190, 140, 40));
 
         buttonDelete.setBackground(new java.awt.Color(255, 255, 255));
         buttonDelete.setFont(new java.awt.Font("MS Reference Sans Serif", 1, 11)); // NOI18N
         buttonDelete.setForeground(new java.awt.Color(0, 0, 0));
         buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-delete-20.png"))); // NOI18N
-        buttonDelete.setText("XÓA");
+        buttonDelete.setText("XÓA RỖNG");
         buttonDelete.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         buttonDelete.setIconTextGap(15);
         buttonDelete.addActionListener(new java.awt.event.ActionListener() {
@@ -249,6 +262,16 @@ public class EmployeeGUI extends javax.swing.JPanel implements MouseListener{
         buttonAdd1.setText("THÊM");
         buttonAdd1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         buttonAdd1.setIconTextGap(15);
+        buttonAdd1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+					buttonAddActionPerformed(evt);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+        });
         Header.add(buttonAdd1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1390, 40, 140, 40));
 
         Main.add(Header, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 1558, 250));
@@ -286,6 +309,7 @@ public class EmployeeGUI extends javax.swing.JPanel implements MouseListener{
         table.setShowVerticalLines(true);
         table.setSurrendersFocusOnKeystroke(true);
         table.getTableHeader().setReorderingAllowed(false);
+        table.addMouseListener(this);
         scrollTable.setViewportView(table);
         model = new DefaultTableModel(new String[] {"Mã Nhân Viên", "Tên Nhân Viên", "Chức Vụ", "Phòng Ban", "Trình Độ Học Vấn", "Bậc Thợ","Số Năm Kinh Nghiệm"},0){
             @Override
@@ -309,6 +333,14 @@ public class EmployeeGUI extends javax.swing.JPanel implements MouseListener{
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(Main, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
+        
+        jComboBox1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				addComboBoxPerformed(e);
+			}
+		});
     }// </editor-fold>//GEN-END:initComponents
 
     public void updateData() throws SQLException {
@@ -419,6 +451,7 @@ public class EmployeeGUI extends javax.swing.JPanel implements MouseListener{
 		buttonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/close_icon.png")));
 		buttonSearch.setVisible(false);
 		buttonUpdate.setVisible(false);
+                txtEmployeeID.setText(String.valueOf(emp_DAO.getID())); 
     }//GEN-LAST:event_buttonAddActionPerformed
 
     private void buttonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteActionPerformed
@@ -445,21 +478,15 @@ public class EmployeeGUI extends javax.swing.JPanel implements MouseListener{
 					buttonSearch.setVisible(true);
 					buttonUpdate.setVisible(true);
 					setEditFalse();
-                    try {
-                        loadData();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(EmployeeGUI.class.getName()).log(Level.SEVERE, null, ex);
+                                        try {
+                                            updateData();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-
                 }
                 else {
                 	deleteField();
                 	table.clearSelection();
-                    try {
-                        loadData();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(EmployeeGUI.class.getName()).log(Level.SEVERE, null, ex);
-                    }
                 }
             }
 
@@ -566,6 +593,8 @@ public class EmployeeGUI extends javax.swing.JPanel implements MouseListener{
 				buttonAdd1.setVisible(true);
 				buttonUpdate.setVisible(true);
 				buttonDelete.setText("XÓA RỖNG");
+                               
+                                
 			}
        }
     }//GEN-LAST:event_buttonSearchActionPerformed

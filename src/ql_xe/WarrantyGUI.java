@@ -655,7 +655,7 @@ public class WarrantyGUI extends javax.swing.JPanel implements MouseListener{
 //    	Header.revalidate();
 //    	Header.repaint();
     }//GEN-LAST:event_buttonAddActionPerformed
-    private void buttonDeleteActionPerformed(java.awt.event.ActionEvent evt) {                                            
+    private void buttonDeleteActionPerformed(java.awt.event.ActionEvent evt)  {                                            
     	if (evt.getSource().equals(buttonDelete)) { 
             if (buttonDelete.getText().equalsIgnoreCase("HỦY")){
                 buttonUpdate.setText("SỬA");
@@ -684,6 +684,11 @@ public class WarrantyGUI extends javax.swing.JPanel implements MouseListener{
 				buttonSearch.setVisible(true);
 		    	buttonUpdate.setVisible(true);
 		    	disableTextField();
+                try {
+                    updateData();
+                } catch (SQLException ex) {
+                    Logger.getLogger(WarrantyGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             else {
             	deleteTextField();

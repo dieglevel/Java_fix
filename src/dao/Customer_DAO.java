@@ -119,9 +119,9 @@ public class Customer_DAO {
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
 				temp.add(new Customer(rs.getString("MaKhachHang"), 
-										rs.getString("TenKhachHang"), 
-										rs.getString("DiaChi"), 
-										rs.getString("SoDienThoai")));
+						rs.getString("TenKhachHang").trim(), 
+						rs.getString("SoDienThoai").trim(), 
+						rs.getString("DiaChi").trim()));
 			}
 			
 		} catch (Exception e) {

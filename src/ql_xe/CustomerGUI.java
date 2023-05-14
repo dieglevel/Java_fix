@@ -30,6 +30,8 @@ import dao.Customer_DAO;
 import dao.Motobike_DAO;
 import entity.Customer;
 import entity.Motobike;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -333,8 +335,8 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
     	for (Customer c : data) {
 			model.addRow(new String[] {c.getMaKhachHang(),
 										c.getTenKhachHang(),
-										c.getDiaChi(),
-										c.getSoDienThoai()
+										c.getSoDienThoai(),
+										c.getDiaChi()
 			});
 
 		}
@@ -365,10 +367,10 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
     		return false;
     	}
     	
-    	Pattern pPhone = Pattern.compile("^[0-9]{10}$");
+    	Pattern pPhone = Pattern.compile("^[0][0-9]{9}$");
     	Matcher mPhone = pPhone.matcher(phone);
     	if(!(mPhone.matches())) {
-    		JOptionPane.showMessageDialog(null, "Số điện thoại phải có 10 số");
+    		JOptionPane.showMessageDialog(null, "Số điện thoại phải có 10 số và bắt đầu là số 0");
     		return false;
     	}
     	return true;
@@ -401,7 +403,7 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
 				e.printStackTrace();
 			}
 			if(evt.getSource().equals(buttonDelete.getText().equalsIgnoreCase("HỦY"))) {
-				buttonAdd.setVisible(true);
+			buttonAdd.setVisible(true);
 	    	   	buttonUpdate.setVisible(true);
 	    	   	buttonDelete.setText("XÓA");
 	    	   	loadTable();
@@ -461,6 +463,11 @@ public class CustomerGUI extends javax.swing.JPanel implements MouseListener {
 		    	buttonUpdate.setVisible(true);
 		    	setEditFalse();
                         disableTextField();
+                try {
+                    updateData();
+                } catch (SQLException ex) {
+                    Logger.getLogger(CustomerGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             else {
             	deleteField();

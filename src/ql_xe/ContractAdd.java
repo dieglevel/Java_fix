@@ -470,6 +470,11 @@ public class ContractAdd extends javax.swing.JFrame {
     private void buttonAddCustomer(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonAddCustomer
 
         customerADD.setVisible(true);
+        try {
+            customerADD.loadData();
+        } catch (SQLException ex) {
+            Logger.getLogger(ContractAdd.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_buttonAddCustomer
 
     private void changeFunction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeFunction
